@@ -155,13 +155,11 @@ function renderRoadmap() {
 }
 function completeStep(stepIndex, nextScreenId) {
 
-    // Only reward if this is new progress
-    if (stepIndex > gameState.progress) {
+    if (stepIndex >= gameState.progress) {
 
-        const completedStep = steps[stepIndex - 1];
+        const completedStep = steps[stepIndex];
 
-        // Update progress FIRST (important)
-        gameState.progress = stepIndex;
+        gameState.progress = stepIndex + 1;
 
         if (completedStep) {
             gameState.xp += completedStep.xp;
@@ -176,11 +174,11 @@ function completeStep(stepIndex, nextScreenId) {
         saveProgress();
     }
 
-    // Force sync & redraw
     userProgress = gameState.progress;
     renderRoadmap();
     nav(nextScreenId);
 }
+
 
 
 /* -------------------- DASHBOARD UPDATER -------------------- */
@@ -434,6 +432,7 @@ function resetApp() {
         location.reload();
     }
 }
+
 
 
 
