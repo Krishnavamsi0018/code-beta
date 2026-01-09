@@ -414,6 +414,26 @@ function playSuccess() {
 function playError() {
     playTone(220, 0.15, "square", 0.18);
 }
+function resetApp() {
+    if (confirm("Reset all progress and start fresh?")) {
+        localStorage.removeItem("codeBetaSave");
+
+        gameState = {
+            progress: 0,
+            xp: 0,
+            streak: 1,
+            badges: [],
+            level: null,
+            lang: null
+        };
+
+        saveProgress();
+        nav('scrn-home');
+        location.reload();
+    }
+}
+
+
 
 
 
