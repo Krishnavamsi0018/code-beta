@@ -1,6 +1,6 @@
 # Code Beta 🚀
 
-Code Beta is a gamified coding learning platform that teaches Python to beginners using interactive roadmap progression, XP, badges, and boss battle mini-games.
+Code Beta is a gamified coding learning platform that teaches Coding to beginners using interactive roadmap progression, XP, badges, and boss battle mini-games.
 
 ## Tech Stack
 • HTML5  
