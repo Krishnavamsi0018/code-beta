@@ -31,9 +31,6 @@ function initApp() {
     loadProgress();
     renderRoadmap();
     updateDashboard();
-    loadProgress();
-    renderRoadmap();
-    updateDashboard();
 }
 
 function saveProgress() {
@@ -53,9 +50,11 @@ function loadProgress() {
 /* -------------------- NAVIGATION -------------------- */
 function nav(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.getElementById('app-screen').scrollTop = 0;
-
+    const screen = document.getElementById(id);
+    if (screen) {
+        screen.classList.add('active');
+        document.getElementById('app-screen').scrollTop = 0;
+    }
     // If navigating to dashboard, refresh the stats
     if (id === 'scrn-dashboard') updateDashboard();
 }
@@ -91,9 +90,6 @@ function sel(el) {
     }
 }
 
-
-
-
 function goToLanguage() {
     if (!gameState.level) return alert("⚠️ Please select a level");
     nav('scrn-language');
@@ -120,97 +116,76 @@ const steps = [
 
 function renderRoadmap() {
     const snake = document.getElementById('progress-path');
-    if (!snake) return; // Safety check
+    
+    // Safety check: if snake path isn't found, stop here to prevent crash
+    if (!snake) return;
 
+    // Sync local var with global state
     userProgress = gameState.progress;
 
     const totalLength = 2500;
-    // Prevent division by zero if steps is empty
-    const ratio = steps.length > 0 ? userProgress / steps.length : 0;
+    // Safety check: prevent division by zero
+    const divisor = steps.length > 1 ? steps.length - 1 : 1; 
+    const progressRatio = userProgress / divisor;
     
-    snake.style.strokeDashoffset = totalLength - (totalLength * ratio);
+    const newOffset = totalLength * (1 - progressRatio);
+    snake.style.strokeDashoffset = newOffset;
 
     steps.forEach((step, index) => {
         const el = document.getElementById(step.id);
         
-        // Safety check: if the HTML element doesn't exist, skip this iteration
-        if (!el) {
-            console.warn(`Element with ID ${step.id} not found.`);
-            return;
-        }
-
+        // Safety check: if element missing, skip
+        if (!el) return;
+        
         el.className = 'map-node';
         el.innerHTML = '';
 
-        // 1. Completed Steps (Green Checkmark)
-        if (index < userProgress) {
-            let style = step.modColor ? `background:${step.modColor};` : '';
-            el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
-            el.onclick = () => nav(step.nav);
-            return;
+        if (index > userProgress) {
+            // Future steps (Locked)
+            el.classList.add('node-locked');
+            let icon = '🔒';
+            if (step.type === 'trophy') icon = '🏆';
+            el.innerHTML = `<div class="node-circle">${icon}</div><div class="node-label">${step.label}</div>`;
         }
-
-        // 2. Current Step (Pulse Animation)
-        if (index === userProgress) {
+        else if (index === userProgress) {
+            // Current step
             let style = step.modColor ? `background:${step.modColor}; border-color:${step.modColor};` : '';
             el.innerHTML = `<div class="node-current" style="${style}">${step.type === 'trophy' ? '🏆' : (index + 1)}</div><div class="node-label">${step.label}</div>`;
-            el.onclick = () => nav(step.nav);
-            return;
+            el.onclick = function () { nav(step.nav); };
         }
-
-        // 3. Locked Steps (Gray)
-        el.classList.add('node-locked');
-        const icon = step.type === 'trophy' ? '🏆' : '🔒';
-        el.innerHTML = `<div class="node-circle">${icon}</div><div class="node-label">${step.label}</div>`;
+        else {
+            // Completed steps
+            let style = step.modColor ? `background:${step.modColor};` : '';
+            el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
+            el.onclick = function () { nav(step.nav); };
+        }
     });
 }
 
-    // Current
-    if (index === userProgress - 1) {
-        let style = step.modColor ? `background:${step.modColor}; border-color:${step.modColor};` : '';
-        el.innerHTML = `<div class="node-current" style="${style}">${step.type === 'trophy' ? '🏆' : (index + 1)}</div><div class="node-label">${step.label}</div>`;
-        el.onclick = () => nav(step.nav);
-    }
-
-    // Completed
-    if (index < userProgress - 1) {
-        let style = step.modColor ? `background:${step.modColor};` : '';
-        el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
-        el.onclick = () => nav(step.nav);
-    }
-});
-
-}
 function completeStep(stepIndex, nextScreenId) {
-    // Prevent re-completing previous steps
-    if (stepIndex < gameState.progress - 1) { // Changed logic slightly to allow re-navigation
-        nav(nextScreenId);
-        return;
-    }
-
-    const step = steps[stepIndex];
-
-    // Only update progress if we are actually moving forward
     if (stepIndex >= gameState.progress) {
-        gameState.progress = stepIndex + 1;
+        const completedStep = steps[stepIndex];
         
-        if (step) {
-            gameState.xp += step.xp || 0;
+        // Advance progress
+        gameState.progress = stepIndex + 1;
 
-            if (step.badge && !gameState.badges.includes(step.badge)) {
-                gameState.badges.push(step.badge);
-                showBadgeModal(step.badge.toUpperCase() + " badge earned!");
+        if (completedStep) {
+            gameState.xp += completedStep.xp;
+
+            if (completedStep.badge && !gameState.badges.includes(completedStep.badge)) {
+                gameState.badges.push(completedStep.badge);
+                showBadgeModal(completedStep.badge.toUpperCase() + " badge earned!");
                 celebrate();
             }
         }
         saveProgress();
     }
-
+    
+    // Update visuals
+    userProgress = gameState.progress;
     renderRoadmap();
     nav(nextScreenId);
 }
-
-
 
 /* -------------------- DASHBOARD UPDATER -------------------- */
 function updateDashboard() {
@@ -343,16 +318,20 @@ function checkVarName(btn, isValid, msg) {
         feedback.style.color = "#B91C1C"; feedback.innerHTML = msg;
     }
 }
+
+/* --- EFFECTS & HELPERS --- */
 function celebrate() {
     const duration = 1500;
     const end = Date.now() + duration;
+
+    // Check if confetti library exists before using
+    if (typeof confetti !== 'function') return;
 
     const interval = setInterval(() => {
         if (Date.now() > end) {
             clearInterval(interval);
             return;
         }
-
         confetti({
             particleCount: 40,
             spread: 360,
@@ -364,15 +343,15 @@ function celebrate() {
         });
     }, 250);
 }
+
 function showAiHint(text) {
     showModal("🤖 Mentor Hint\n\n" + text);
 }
 
-
-let resetClicks = 0;
-
 function showModal(message) {
     const modal = document.getElementById("coming-soon-modal");
+    if (!modal) return alert(message); // Fallback if modal missing
+    
     document.getElementById("modal-message").innerText = message;
     modal.style.display = "block";
     setTimeout(() => modal.classList.add("show"), 10);
@@ -380,9 +359,12 @@ function showModal(message) {
 
 function closeModal() {
     const modal = document.getElementById("coming-soon-modal");
-    modal.classList.remove("show");
-    setTimeout(() => modal.style.display = "none", 300);
+    if (modal) {
+        modal.classList.remove("show");
+        setTimeout(() => modal.style.display = "none", 300);
+    }
 }
+
 function checkMathTask() {
     const val = document.getElementById("math-answer").value.trim();
     const fb = document.getElementById("math-feedback");
@@ -396,7 +378,6 @@ function checkMathTask() {
         next.style.pointerEvents = "auto";
         next.className = "btn btn-green";
         
-
         celebrate();
         gameState.xp += 15;
         saveProgress();
@@ -406,20 +387,29 @@ function checkMathTask() {
         playError();
     }
 }
+
 function showBadgeModal(text) {
+    const modal = document.getElementById("badge-modal");
+    if (!modal) return;
+    
     document.getElementById("badge-text").innerText = text;
-    document.getElementById("badge-modal").style.display = "block";
-    setTimeout(()=>document.getElementById("badge-modal").classList.add("show"),10);
+    modal.style.display = "block";
+    setTimeout(() => modal.classList.add("show"), 10);
 }
 
 function closeBadgeModal() {
     const modal = document.getElementById("badge-modal");
-    modal.classList.remove("show");
-    setTimeout(()=>modal.style.display="none",300);
+    if (modal) {
+        modal.classList.remove("show");
+        setTimeout(() => modal.style.display = "none", 300);
+    }
 }
+
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playTone(freq, duration = 0.08, type = "sine", volume = 0.15) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
@@ -433,6 +423,7 @@ function playTone(freq, duration = 0.08, type = "sine", volume = 0.15) {
     osc.start();
     osc.stop(audioCtx.currentTime + duration);
 }
+
 function playClick() {
     playTone(600, 0.05, "triangle", 0.08);
 }
@@ -445,6 +436,7 @@ function playSuccess() {
 function playError() {
     playTone(220, 0.15, "square", 0.18);
 }
+
 function resetApp() {
     if (confirm("Reset all progress and start fresh?")) {
         localStorage.removeItem("codeBetaSave");
@@ -463,19 +455,3 @@ function resetApp() {
         location.reload();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
