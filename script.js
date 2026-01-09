@@ -135,7 +135,7 @@ function renderRoadmap() {
         el.className = 'map-node';
         el.innerHTML = '';
 
-        if (index > userProgress) {
+        if (index >= userProgress) {
             el.classList.add('node-locked');
             let icon = '🔒';
             if (step.type === 'trophy') icon = '🏆';
@@ -432,6 +432,7 @@ function resetApp() {
         location.reload();
     }
 }
+
 
 
 
