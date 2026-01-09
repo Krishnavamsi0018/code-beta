@@ -700,4 +700,19 @@ h3 {
     font-weight:700;
     letter-spacing:0.4px;
 }
+/* ---  Fit Phone For All Screens --- */
+@media (max-width: 1200px) {
+    .phone-frame { transform: scale(0.9); }
+}
+@media (max-width: 1000px) {
+    .phone-frame { transform: scale(0.8); }
+}
+@media (max-width: 800px) {
+    .phone-frame { transform: scale(0.7); }
+}
+@media (max-width: 600px) {
+    .phone-frame { transform: scale(0.6); }
+}
+
+
 
