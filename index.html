@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Code Beta | Flow Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body onload="initApp()">
+
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div id="app-screen">
+
+            <div id="scrn-home" class="screen active">
+                <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:20px;">
+                    <div
+                        style="background:white; padding:40px 30px; border-radius:40px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.05);">
+                        <div style="font-size:50px; margin-bottom:20px;">⚙️</div>
+                        <h1 style="font-size:28px; margin-bottom:10px;">Code Beta</h1>
+                        <p style="color:#64748B; margin-bottom:30px;">Master Coding with gamified challenges</p>
+                        <button class="btn btn-blue" onclick="playClick(); nav('scrn-signup')">Start Journey</button>
+                        <div onclick="nav('scrn-login')"
+                            style="margin-top:20px; font-size:12px; color:#94A3B8; font-weight:600; cursor:pointer;">
+                            ALREADY A MEMBER? LOG IN</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scrn-signup" class="screen">
+                <div class="back-btn" onclick="nav('scrn-home')">←</div>
+                <h2>Create your account</h2>
+                <p style="color:#64748B;margin-top:6px;"></p>
+
+                <input id="input-name" placeholder="Name" class="input">
+                <input placeholder="Your email" class="input">
+                <input placeholder="Your password" type="password" class="input">
+                <button class="btn btn-blue" onclick="nav('scrn-level')"> Sign Up</button>
+            </div>
+
+            <div id="scrn-login" class="screen">
+                <div class="back-btn" onclick="nav('scrn-home')">←</div>
+                <h2>Welcome Back</h2>
+                <input placeholder="Email" class="input">
+                <input placeholder="Password" type="password" class="input">
+                <button class="btn btn-black" onclick="playClick();nav('scrn-level')">Start Learning</button>
+            </div>
+
+            <div id="scrn-level" class="screen">
+                <div class="back-btn" onclick="nav('scrn-home')">←</div>
+                <h2>Choose Experience</h2>
+                <div class="card" onclick="sel(this)">
+                    <div style="font-size:24px;">🌱</div>
+                    <h3>Beginner</h3>
+                    <p style="font-size:12px;">Starting from scratch</p>
+                </div>
+                <div class="card" onclick="sel(this)">
+                    <div style="font-size:24px;">🔨</div>
+                    <h3>Intermediate</h3>
+                    <p style="font-size:12px;">Know basic syntax</p>
+                </div>
+                <div class="card" onclick="sel(this)">
+                    <div style="font-size:24px;">🦾</div>
+                    <h3>Pro</h3>
+                    <p style="font-size:12px;">Advanced & challenges</p>
+                </div>
+                <div class="sticky-footer"><button class="btn btn-black"
+                        onclick="playClick(); goToLanguage()">Continue</button>
+                </div>
+            </div>
+
+            <div id="scrn-language" class="screen">
+                <div class="back-btn" onclick="nav('scrn-level')">←</div>
+                <h2>Choose Language</h2>
+                <div class="card lang-card python" onclick="sel(this)">
+                    <div class="lang-icon">🐍</div>
+                    <div class="lang-info">
+                        <h3>Python</h3>
+                        <small>Primary learning path</small>
+                        <span class="lang-tag active">Available</span>
+                    </div>
+                </div>
+
+                <div class="card lang-card java locked" onclick="sel(this)">
+                    <div class="lang-icon">☕</div>
+                    <div class="lang-info">
+                        <h3>Java</h3>
+                        <small>Enterprise programming</small>
+                        <span class="lang-tag coming">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="card lang-card cpp locked" onclick="sel(this)">
+                    <div class="lang-icon">⚙️</div>
+                    <div class="lang-info">
+                        <h3>C++</h3>
+                        <small>System & game development</small>
+                        <span class="lang-tag coming">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="sticky-footer"><button class="btn btn-black"
+                        onclick="playClick();goToRoadmap()">Continue</button></div>
+            </div>
+
+            <div id="scrn-roadmap" class="screen">
+                <div class="back-btn" onclick="nav('scrn-level')">←</div>
+                <div style="text-align:center; margin-bottom:10px;">
+                    <h2 style="margin:0;">Python Path</h2>
+                    <small style="color:#64748B;">Progression Logic Enabled</small>
+                </div>
+                <div class="roadmap-area">
+                    <svg class="roadmap-svg" viewBox="0 0 320 1200" preserveAspectRatio="none">
+                        <defs>
+                            <path id="snake-path"
+                                d="M 60 40 C 60 40, 260 40, 260 150 C 260 260, 60 260, 60 370 C 60 480, 260 480, 260 590 C 260 700, 60 700, 60 810 C 60 920, 260 920, 260 1030" />
+                        </defs>
+                        <use href="#snake-path" stroke="#E2E8F0" stroke-width="12" fill="none" stroke-linecap="round" />
+                        <use id="progress-path" href="#snake-path" stroke="var(--accent-green)" stroke-width="12"
+                            fill="none" stroke-linecap="round" class="path-glow" stroke-dasharray="2500"
+                            stroke-dashoffset="2500" />
+                    </svg>
+                    <div class="mod-header" style="top: -30px;">MODULE 1: BASICS</div>
+                    <div id="chap1-node" class="map-node" style="top: 40px; left: 60px;"></div>
+                    <div id="chap2-node" class="map-node" style="top: 150px; left: 260px;"></div>
+                    <div id="chap3-node" class="map-node" style="top: 370px; left: 60px;"></div>
+                    <div id="node-mod1-game" class="map-node" style="top: 590px; left: 260px;"></div>
+                    <div class="mod-header" style="top: 650px; color:#F59E0B;">MODULE 2: VARIABLES</div>
+                    <div id="node-mod2" class="map-node" style="top: 810px; left: 60px;"></div>
+                    <div class="mod-header" style="top: 900px; color:#8B5CF6;">MODULE 3: LOGIC</div>
+                    <div id="node-mod3" class="map-node" style="top: 1030px; left: 260px;"></div>
+                    <div id="node-mod3-game" class="map-node" style="top: 1150px; left: 60px;"></div>
+                </div>
+            </div>
+
+            <div id="scrn-chap1" class="screen">
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                    <div class="back-btn" onclick="nav('scrn-roadmap')" style="margin:0; font-size:20px;">←</div>
+                    <h3 style="flex-grow:1; font-size:16px; font-weight:700; text-align:center;">Chapter 1: Comments
+                    </h3>
+                    <div style="width:20px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                    <div style="flex-grow:1; height:6px; background:#E5E7EB; border-radius:10px;">
+                        <div style="width:5%; height:100%; background:#22C55E; border-radius:10px;"></div>
+                    </div>
+                    <span style="font-size:12px; font-weight:600; color:#22C55E;">5%</span>
+                </div>
+                <div style="background:#F3F4F6; border-radius:12px; padding:15px; margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="text-align:center;">
+                            <div style="font-size:30px;">📄</div>
+                            <div style="font-size:10px;">.py</div>
+                        </div>
+                        <div style="font-size:14px;">→</div>
+                        <div style="background:#E5E7EB; padding:10px; border-radius:8px; width:140px;">
+                            <div style="text-align:center; font-size:10px; font-weight:700;">Interpreter</div>
+                            <div style="font-size:9px; margin-top:5px;">Comments → 🗑️</div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="background:white; padding:20px; border-radius:16px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; border:1px solid #eee;">
+                    <h4
+                        style="color:#1a1a1a; margin-bottom:10px; font-size:14px; border-bottom:2px solid #E5E7EB; padding-bottom:8px;">
+                        📝 What are Comments?</h4>
+                    <p style="font-size:13px; color:#4B5563; line-height:1.6; margin-bottom:10px;">Code is for
+                        computers, but <b>Comments</b> are for humans.</p>
+                    <ul style="font-size:12px; color:#4B5563; padding-left:20px; line-height:1.8;">
+                        <li>They start with a hash symbol (<b>#</b>).</li>
+                        <li>The computer <b>ignores</b> them completely.</li>
+                        <li>Use them to leave notes for yourself!</li>
+                    </ul>
+                </div>
+                <div class="code-editor">
+                    <div><span style="color:#FCD34D;">print</span>(<span style="color:#4ADE80;">"Hi"</span>)</div>
+                    <div style="color:#9CA3AF;"># This is a comment</div>
+                </div>
+                <div class="sticky-footer"><button class="btn btn-black"
+                        onclick=" playClick();completeStep(1, 'scrn-chap2')">Next:
+                        Print()</button></div>
+            </div>
+
+            <div id="scrn-chap2" class="screen">
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                    <div class="back-btn" onclick="nav('scrn-chap1')" style="margin:0; font-size:20px;">←</div>
+                    <h3 style="flex-grow:1; font-size:16px; font-weight:700; text-align:center;">Chapter 2: Output</h3>
+                    <div style="width:20px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                    <div style="flex-grow:1; height:6px; background:#E5E7EB; border-radius:10px;">
+                        <div style="width:33%; height:100%; background:#22C55E; border-radius:10px;"></div>
+                    </div>
+                    <span style="font-size:12px; font-weight:600; color:#22C55E;">33%</span>
+                </div>
+                <div
+                    style="background:white; padding:20px; border-radius:16px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; border:1px solid #eee;">
+                    <h4
+                        style="color:#1a1a1a; margin-bottom:10px; font-size:14px; border-bottom:2px solid #E5E7EB; padding-bottom:8px;">
+                        🖨️ The Print Function</h4>
+                    <p style="font-size:13px; color:#4B5563; line-height:1.6; margin-bottom:10px;">To see results, we
+                        must "print" them to the screen using <code>print()</code>.</p>
+                    <div style="background:#EFF6FF; border-left:3px solid #3B82F6; padding:10px; border-radius:6px;">
+                        <strong style="color:#1E40AF; font-size:12px;">⚠️ Syntax Rule:</strong>
+                        <p style="font-size:12px; color:#1E3A8A; margin-top:5px; line-height:1.4;">
+                            • <b>Text:</b> Needs quotes -> <code>"Hello"</code><br>
+                            • <b>Numbers:</b> No quotes -> <code>50</code>
+                        </p>
+                    </div>
+                </div>
+                <div class="code-editor">
+                    <span style="color:#FCD34D;">print</span>(<span style="color:#4ADE80;">"Code Beta"</span>)<br>
+                    <span style="color:#FCD34D;">print</span>(<span style="color:#60A5FA;">5</span> + <span
+                        style="color:#60A5FA;">3</span>)
+                </div>
+                <div
+                    style="background:white; padding:15px; border-radius:12px; box-shadow:var(--card-shadow); margin-bottom:20px;">
+                    <h4 style="font-size:14px; margin-bottom:5px;">Output:</h4>
+                    <div style="font-family:'Courier New'; font-size:13px; color:#333;">Code Beta<br>8</div>
+                </div>
+                <div class="sticky-footer"><button class="btn btn-black"
+                        onclick="playClick();completeStep(2, 'scrn-chap3')">Next:
+                        Calculator</button></div>
+            </div>
+
+            <div id="scrn-chap3" class="screen">
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                    <div class="back-btn" onclick="nav('scrn-chap2')" style="margin:0; font-size:20px;">←</div>
+                    <h3 style="flex-grow:1; font-size:16px; font-weight:700; text-align:center;">Chapter 3: Math</h3>
+                    <div style="width:20px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                    <div style="flex-grow:1; height:6px; background:#E5E7EB; border-radius:10px;">
+                        <div style="width:66%; height:100%; background:#22C55E; border-radius:10px;"></div>
+                    </div>
+                    <span style="font-size:12px; font-weight:600; color:#22C55E;">66%</span>
+                </div>
+                <div
+                    style="background:white; padding:20px; border-radius:16px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; border:1px solid #eee;">
+                    <h4
+                        style="color:#1a1a1a; margin-bottom:10px; font-size:14px; border-bottom:2px solid #E5E7EB; padding-bottom:8px;">
+                        🧮 Doing Math</h4>
+                    <p style="font-size:13px; color:#4B5563; line-height:1.6; margin-bottom:15px;">Python acts like a
+                        powerful calculator. However, the symbols for multiply and divide are unique.</p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                        <div
+                            style="background:#F3F4F6; padding:12px; border-radius:10px; display:flex; align-items:center; gap:10px;">
+                            <div style="font-weight:800; color:#3B82F6; font-size:18px; width:20px;">*</div>
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-weight:700; font-size:12px; color:#1f2937;">Multiply</span><span
+                                    style="font-size:10px; color:#6B7280;">Use asterisk, not x</span>
+                            </div>
+                        </div>
+                        <div
+                            style="background:#F3F4F6; padding:12px; border-radius:10px; display:flex; align-items:center; gap:10px;">
+                            <div style="font-weight:800; color:#3B82F6; font-size:18px; width:20px;">/</div>
+                            <div style="display:flex; flex-direction:column;">
+                                <span style="font-weight:700; font-size:12px; color:#1f2937;">Divide</span><span
+                                    style="font-size:10px; color:#6B7280;">Use forward slash</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-editor">
+                    <span style="color:#FCD34D;">print</span>(<span style="color:#60A5FA;">10</span> + <span
+                        style="color:#60A5FA;">5</span>) <span style="color:#9CA3AF;"># Sum</span><br>
+                    <span style="color:#FCD34D;">print</span>(<span style="color:#60A5FA;">10</span> * <span
+                        style="color:#60A5FA;">2</span>) <span style="color:#9CA3AF;"># Product</span>
+                </div>
+                <div
+                    style="background:#FFF5E6; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #FCD34D;">
+                    <h4 style="font-size:14px; margin-bottom:5px; color:#D97706;">⚔️ Mini Task: Math Battle</h4>
+                    <p style="font-size:12px;">Calculate the product of 5 and 5.</p>
+                    <div class="math-task">
+                        <div class="math-code">print(5 * 5)</div>
+
+                        <input id="math-answer" class="math-input" placeholder="Enter output here...">
+
+                        <button class="btn btn-blue math-btn" onclick="checkMathTask()">Check Answer</button>
+
+                        <div id="math-feedback"></div>
+                    </div>
+
+                </div>
+                <div class="sticky-footer">
+                    <button id="math-next-btn" class="btn btn-black" style="opacity:0.5; pointer-events:none;"
+                        onclick="playClick();completeStep(3, 'scrn-mod1-game')">
+                        Unlock Final Exam
+                    </button>
+                </div>
+
+            </div>
+
+            <div id="scrn-mod1-game" class="screen dark-mode">
+                <div class="back-btn" onclick="nav('scrn-chap3')">←</div>
+                <small style="color:var(--accent-green); font-weight:bold;">MODULE 1 FINAL</small>
+                <h2 style="margin-top:5px;">Fix the Program 🔧</h2>
+                <div
+                    style="background:#2D2D2D; border-left:4px solid #EF4444; padding:15px; border-radius:8px; margin-bottom:20px; margin-top:15px;">
+                    <h4 style="color:#EF4444; margin-bottom:5px; font-size:13px;">🚫 Syntax Error Detected</h4>
+                    <div
+                        style="font-family:'Courier New'; font-size:11px; color:#FCA5A5; margin-bottom:10px; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px;">
+                        SyntaxError: Missing parentheses in call to 'print'.</div>
+                    <p style="font-size:12px; color:#D1D5DB; line-height:1.4;"><b>Hint:</b> In Python 3,
+                        <code>print</code> is a function. It acts like a mouth that needs lips <code>()</code> to speak!
+                    </p>
+                </div>
+                <p style="color:#9CA3AF; margin-bottom:10px; font-size:13px;">Select the correct code to fix the error:
+                </p>
+                <div class="code-editor" style="border-color:#EF4444; position:relative; opacity:0.8;">
+                    <div
+                        style="position:absolute; top:-10px; right:10px; background:#EF4444; color:white; font-size:10px; padding:2px 8px; border-radius:10px;">
+                        BROKEN</div>
+                    <span style="color:#FCD34D;">print</span> <span style="color:#4ADE80;">"Hello World"</span>
+                </div>
+                <div id="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">print "Hello World"</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">print("Hello World")</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Print("Hello World")</div>
+                </div>
+                <div id="feedback" style="height:40px; text-align:center; font-weight:bold; margin-top:10px;"></div>
+                <div class="sticky-footer"><button id="finish-mod-btn" class="btn btn-green"
+                        style="opacity:0.5; pointer-events:none;"
+                        onclick="playClick();completeStep(4, 'scrn-roadmap')">Finish
+                        Module 1</button></div>
+            </div>
+
+            <div id="scrn-mod2" class="screen">
+                <div class="back-btn" onclick="nav('scrn-roadmap')">←</div>
+                <small style="color:#F59E0B; font-weight:bold;">MODULE 2</small>
+                <h2 style="margin-bottom:10px;">Variables 📦</h2>
+                <div
+                    style="background:white; padding:15px; border-radius:16px; box-shadow:var(--card-shadow); margin-bottom:20px; display:flex; align-items:center; gap:15px;">
+                    <div
+                        style="background:#FFF7ED; width:60px; height:60px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:30px; border:2px solid #F59E0B;">
+                        📦</div>
+                    <div>
+                        <h4 style="font-size:14px; margin-bottom:2px;">The Box Metaphor</h4>
+                        <p style="font-size:12px; color:#64748B; line-height:1.3;">Think of a variable as a storage
+                            box.<br><b>Label:</b> <code>score</code> <br><b>Content:</b> <code>10</code></p>
+                    </div>
+                </div>
+                <p style="font-size:13px; color:#374151; margin-bottom:15px;">We assign values using the <b>=</b> sign.
+                </p>
+                <div class="code-editor" style="border-left: 4px solid #F59E0B;">
+                    score = <span style="color:#60A5FA;">10</span><br>
+                    name = <span style="color:#4ADE80;">"Player"</span><br>
+                    <span style="color:#FCD34D;">print</span>(score)
+                </div>
+                <div
+                    style="background:#FFF7ED; border:1px solid #FED7AA; padding:15px; border-radius:12px; margin-bottom:20px; margin-top:20px;">
+                    <h4 style="color:#D97706; margin-bottom:10px; font-size:14px;">🎮 Mini-Game: Naming Police</h4>
+                    <p style="font-size:12px; margin-bottom:15px; color:#9A3412;">Which variable name is <b>valid</b> in
+                        Python?</p>
+                    <div class="var-quiz-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <button class="btn var-btn"
+                            style="background:white; color:#333; padding:12px; font-size:12px; border:1px solid #ddd;"
+                            onclick="checkVarName(this, false, '🚫 Cannot start with a number!')">2player</button>
+                        <button class="btn var-btn"
+                            style="background:white; color:#333; padding:12px; font-size:12px; border:1px solid #ddd;"
+                            onclick="checkVarName(this, true, '✅ Correct! Snake_case is standard.')">player_score</button>
+                        <button class="btn var-btn"
+                            style="background:white; color:#333; padding:12px; font-size:12px; border:1px solid #ddd;"
+                            onclick="checkVarName(this, false, '🚫 No spaces allowed! Use _ instead.')">my
+                            score</button>
+                        <button class="btn var-btn"
+                            style="background:white; color:#333; padding:12px; font-size:12px; border:1px solid #ddd;"
+                            onclick="checkVarName(this, false, '🚫 Reserved keyword! Python uses this.')">print</button>
+                    </div>
+                    <div id="var-feedback"
+                        style="font-size:12px; font-weight:700; text-align:center; margin-top:15px; min-height:20px;">
+                    </div>
+                </div>
+                <div class="sticky-footer"><button id="btn-mod2-next" class="btn btn-black"
+                        style="opacity:0.5; pointer-events:none;"
+                        onclick="playClick();completeStep(5, 'scrn-mod3')">Next Module:
+                        Logic</button></div>
+            </div>
+
+            <div id="scrn-mod3" class="screen dark-mode">
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                    <div class="back-btn" onclick="nav('scrn-roadmap')" style="margin:0; font-size:20px;">←</div>
+                    <h3 style="flex-grow:1; font-size:16px; font-weight:700; text-align:center; color:white;">Chapter 3:
+                        Logic</h3>
+                    <div style="width:20px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                    <div style="flex-grow:1; height:6px; background:#333; border-radius:10px;">
+                        <div style="width:10%; height:100%; background:#8B5CF6; border-radius:10px;"></div>
+                    </div>
+                    <span style="font-size:12px; font-weight:600; color:#8B5CF6;">Intro</span>
+                </div>
+                <div
+                    style="background:#1F2937; padding:20px; border-radius:16px; margin-bottom:20px; border-left:4px solid #8B5CF6;">
+                    <h4 style="color:white; margin-bottom:15px; font-size:15px;">Making Decisions 🔀</h4>
+                    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:15px;">
+                        <div
+                            style="background:#374151; padding:6px 12px; border-radius:20px; font-size:11px; margin-bottom:5px; color:#e5e5e5;">
+                            Is it Raining? 🌧️</div>
+                        <div style="display:flex; justify-content:center; gap:40px; width:100%; margin-bottom:5px;">
+                            <div style="width:1px; height:10px; background:#6B7280; transform:rotate(-30deg);"></div>
+                            <div style="width:1px; height:10px; background:#6B7280; transform:rotate(30deg);"></div>
+                        </div>
+                        <div style="display:flex; justify-content:center; gap:20px; width:100%;">
+                            <div style="text-align:center;">
+                                <span style="font-size:9px; color:#22C55E; font-weight:bold;">YES</span>
+                                <div
+                                    style="background:#111; border:1px solid #22C55E; padding:6px; border-radius:8px; font-size:18px; margin-top:2px;">
+                                    ☔</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <span style="font-size:9px; color:#EF4444; font-weight:bold;">NO</span>
+                                <div
+                                    style="background:#111; border:1px solid #EF4444; padding:6px; border-radius:8px; font-size:18px; margin-top:2px;">
+                                    😎</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style="background:#111; padding:12px; border-radius:8px; font-family:'Courier New'; font-size:13px; color:#E5E7EB; line-height:1.5;">
+                        <span style="color:#C678DD;">if</span> <span style="color:#60A5FA;">raining</span>:<br>
+                        &nbsp;&nbsp;Take umbrella ☔<br>
+                        <span style="color:#C678DD;">else</span>:<br>
+                        &nbsp;&nbsp;Wear sunglasses 😎
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:#9CA3AF; font-style:italic;">⚠️ The indentation
+                        (space) tells Python what belongs to the 'if'.</div>
+                </div>
+                <h3 style="font-size:16px; margin-bottom:10px; color:white;">Mini Task: Security Check</h3>
+                <div class="code-editor" style="border-color:#8B5CF6; margin-top:0;">
+                    age = <span id="age-display" style="color:#F59E0B;">??</span><br>
+                    <span style="color:#C678DD;">if</span> age >= <span style="color:#60A5FA;">18</span>:<br>
+                    &nbsp; <span style="color:#FCD34D;">print</span>(<span style="color:#4ADE80;">"Access
+                        Granted"</span>)<br>
+                    <span style="color:#C678DD;">else</span>:<br>
+                    &nbsp; <span style="color:#FCD34D;">print</span>(<span style="color:#EF4444;">"Access
+                        Denied"</span>)
+                </div>
+                <div
+                    style="background:#2D2D2D; padding:20px; border-radius:15px; text-align:center; margin-bottom:20px;">
+                    <div id="door-visual"
+                        style="width:60px; height:80px; background:#EF4444; margin:0 auto 15px auto; border-radius:4px; display:flex; align-items:center; justify-content:center; color:white; font-size:24px; border:2px solid #555; transition:0.3s;">
+                        🔒</div>
+                    <p style="font-size:12px; color:#ccc; margin-bottom:15px;">Select an age to test:</p>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <button class="btn" style="width:auto; padding:10px 20px; background:#444; color:white;"
+                            onclick="checkDoor(12)">12</button>
+                        <button class="btn" style="width:auto; padding:10px 20px; background:#8B5CF6; color:white;"
+                            onclick="checkDoor(18)">18</button>
+                    </div>
+                </div>
+                <button id="finish-demo-btn" class="btn btn-black"
+                    style="background:white; color:black; opacity:0.5; pointer-events:none;"
+                    onclick="playClick();completeStep(6, 'scrn-mod3-game')">Next: Final Boss</button>
+            </div>
+
+            <div id="scrn-mod3-game" class="screen dark-mode">
+
+                <div class="back-btn" onclick="nav('scrn-mod3')">←</div>
+                <div class="ai-hint-btn" onclick="showAiHint('Remember: strings need quotes!')">
+                    🤖 Ask AI
+                </div>
+
+
+                <div class="battle-header">
+                    <small>MODULE 3 FINAL</small>
+                    <h2>Logic Battle ⚔️</h2>
+                </div>
+
+                <div
+                    style="background:#1F2937; padding:15px; border-radius:12px; margin-bottom:20px; border-left:4px solid #8B5CF6;">
+                    <h4 style="color:white; margin-bottom:5px; font-size:14px;">How the Computer Thinks 🧠</h4>
+                    <p style="color:#9CA3AF; font-size:11px; line-height:1.4; margin-bottom:10px;">The game uses
+                        <b>multiple conditions</b> to check who wins. In Python, we use `elif` (else if) to check extra
+                        options.
+                    </p>
+                    <div
+                        style="background:#111; padding:10px; border-radius:8px; font-family:'Courier New'; font-size:11px; color:#e5e5e5; line-height:1.5;">
+                        <span style="color:#C678DD;">if</span> you == <span style="color:#76ff03;">"Snake"</span> <span
+                            style="color:#C678DD;">and</span> cpu == <span style="color:#00e5ff;">"Water"</span>:<br>
+                        &nbsp; <span style="color:#FCD34D;">print</span>("You Win")<br>
+                        <span style="color:#C678DD;">elif</span> you == <span style="color:#00e5ff;">"Water"</span>
+                        <span style="color:#C678DD;">and</span> cpu == <span style="color:#f44336;">"Gun"</span>:<br>
+                        &nbsp; <span style="color:#FCD34D;">print</span>("You Win")
+                    </div>
+                </div>
+                <p style="color:#ccc; font-size:12px; margin-bottom:15px; text-align:center;"><b>Task:</b> Beat the CPU
+                    logic 3 times!</p>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <button class="btn-game-opt btn-snake" onclick="playSnakeGame('Snake')">🐍</button>
+                    <button class="btn-game-opt btn-water" onclick="playSnakeGame('Water')">💧</button>
+                    <button class="btn-game-opt btn-gun" onclick="playSnakeGame('Gun')">🔫</button>
+                </div>
+                <div class="code-editor"
+                    style="text-align:center; min-height:60px; display:flex; flex-direction:column; justify-content:center;">
+                    <small style="color:#64748B; margin-bottom:5px;">RESULT LOG:</small>
+                    <span id="game-result" style="font-weight:bold; color:white;">Choose your weapon...</span>
+                </div>
+                <div id="battle-area" style="font-size:40px;text-align:center;height:60px;"></div>
+
+                <div class="score-box">
+                    <div>You: <span id="user-score" style="color:#76ff03; font-weight:bold;">0</span></div>
+                    <div>CPU: <span id="comp-score" style="color:#f44336; font-weight:bold;">0</span></div>
+                </div>
+                <div class="sticky-footer"><button id="btn-finish-demo-game" class="btn btn-green"
+                        style="opacity:0.5; pointer-events:none;" onclick="nav('scrn-dashboard')">Unlock Next Level
+                        3</button></div>
+            </div>
+
+            <div id="scrn-dashboard" class="screen">
+                <h2>Dashboard</h2>
+                <div style="display:flex; justify-content:center; margin:30px 0;">
+                    <div
+                        style="width:150px; height:150px; border-radius:50%; background:conic-gradient(var(--accent-green) 100%, #E2E8F0 0); display:flex; align-items:center; justify-content:center;">
+                        <div
+                            style="width:130px; height:130px; background:var(--bg-light); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                            <span style="font-size:32px; font-weight:800;">100%</span>
+                            <small style="color:#64748B;">Overview</small>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:15px; margin-bottom:20px;">
+                    <div class="card" style="flex:1; text-align:center; margin:0;">
+                        <div style="font-size:24px;">🔥</div>
+                        <h3 id="dash-streak">1</h3><small>Streak</small>
+                    </div>
+                    <div class="card" style="flex:1; text-align:center; margin:0;">
+                        <div style="font-size:24px;">💎</div>
+                        <h3 id="dash-xp">0</h3><small>XP</small>
+                    </div>
+                </div>
+                <h3 style="font-size:16px; margin-bottom:10px;">Badges</h3>
+                <div id="badge-beginner" class="card" style="display:flex; align-items:center; gap:15px; opacity:0.5;">
+                    <div style="font-size:30px;">🥉</div>
+                    <div>
+                        <h4 style="font-size:14px;">Beginner Coder</h4>
+                        <small>Locked</small>
+                    </div>
+                </div>
+                <div id="badge-logic" class="card" style="display:flex; align-items:center; gap:15px; opacity:0.5;">
+                    <div style="font-size:30px;">🥈</div>
+                    <div>
+                        <h4 style="font-size:14px;">Logic Learner</h4>
+                        <small>Locked</small>
+                    </div>
+                </div>
+                <div class="sticky-footer" style="background:white; padding-bottom:20px; border-top:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-around;">
+                        <div onclick="nav('scrn-home')" style="text-align:center; opacity:0.5; cursor:pointer;"><i
+                                class="fa-solid fa-house" style="font-size:20px;"></i><br><small>Home</small></div>
+                        <div onclick="nav('scrn-roadmap')"
+                            style="text-align:center; color:var(--primary-black); cursor:pointer;"><i
+                                class="fa-solid fa-map" style="font-size:20px;"></i><br><small>Roadmap</small></div>
+                        <div style="text-align:center; opacity:0.5; cursor:pointer;"><i class="fa-solid fa-user"
+                                style="font-size:20px;"></i><br><small>Profile</small></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="coming-soon-modal" style="display:none;">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-box">
+            <h3 id="modal-title">🚧 Coming Soon</h3>
+            <p id="modal-message"></p>
+            <button class="btn btn-black" onclick="closeModal()">Got it</button>
+        </div>
+    </div>
+    <div id="badge-modal" style="display:none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-box">
+            <h3>🏅 New Badge Unlocked!</h3>
+            <p id="badge-text"></p>
+            <button class="btn btn-green" onclick="closeBadgeModal()">Awesome!</button>
+        </div>
+    </div>
+
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
