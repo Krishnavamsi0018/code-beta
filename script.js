@@ -131,27 +131,32 @@ function renderRoadmap() {
 
 
     steps.forEach((step, index) => {
-        const el = document.getElementById(step.id);
-        el.className = 'map-node';
-        el.innerHTML = '';
+    const el = document.getElementById(step.id);
+    el.className = 'map-node';
+    el.innerHTML = '';
 
-        if (index >= userProgress) {
-            el.classList.add('node-locked');
-            let icon = '🔒';
-            if (step.type === 'trophy') icon = '🏆';
-            el.innerHTML = `<div class="node-circle">${icon}</div><div class="node-label">${step.label}</div>`;
-        }
-        else if (index === userProgress) {
-            let style = step.modColor ? `background:${step.modColor}; border-color:${step.modColor};` : '';
-            el.innerHTML = `<div class="node-current" style="${style}">${step.type === 'trophy' ? '🏆' : (index + 1)}</div><div class="node-label">${step.label}</div>`;
-            el.onclick = function () { nav(step.nav); };
-        }
-        else {
-            let style = step.modColor ? `background:${step.modColor};` : '';
-            el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
-            el.onclick = function () { nav(step.nav); };
-        }
-    });
+    // Locked (future)
+    if (index >= userProgress) {
+        el.classList.add('node-locked');
+        let icon = step.type === 'trophy' ? '🏆' : '🔒';
+        el.innerHTML = `<div class="node-circle">${icon}</div><div class="node-label">${step.label}</div>`;
+    }
+
+    // Current
+    if (index === userProgress - 1) {
+        let style = step.modColor ? `background:${step.modColor}; border-color:${step.modColor};` : '';
+        el.innerHTML = `<div class="node-current" style="${style}">${step.type === 'trophy' ? '🏆' : (index + 1)}</div><div class="node-label">${step.label}</div>`;
+        el.onclick = () => nav(step.nav);
+    }
+
+    // Completed
+    if (index < userProgress - 1) {
+        let style = step.modColor ? `background:${step.modColor};` : '';
+        el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
+        el.onclick = () => nav(step.nav);
+    }
+});
+
 }
 function completeStep(stepIndex, nextScreenId) {
 
@@ -432,6 +437,7 @@ function resetApp() {
         location.reload();
     }
 }
+
 
 
 
