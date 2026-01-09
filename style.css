@@ -34,9 +34,8 @@ body, button, input, textarea {
 
 /* --- PHONE FRAME --- */
 .phone-frame {
-    width: 400px;
-    height: 850px;
-    max-height: 90vh;
+    width: clamp(260px, 90vw, 400px);
+    height: clamp(520px, 90vh, 850px);
     background: var(--bg-light);
     border-radius: 45px;
     box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.5);
@@ -45,6 +44,7 @@ body, button, input, textarea {
     overflow: hidden;
     margin: auto;
 }
+
 
 .notch {
     position: absolute;
@@ -733,6 +733,7 @@ h3 {
 @media (max-height: 500px) {
     .phone-frame { transform: scale(0.7); }
 }
+
 
 
 
