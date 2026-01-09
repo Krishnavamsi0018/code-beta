@@ -141,31 +141,35 @@ function renderRoadmap() {
         }
     });
 }
-
 function completeStep(stepIndex, nextScreenId) {
+
     // Only reward if this is new progress
     if (stepIndex > gameState.progress) {
+
+        const completedStep = steps[stepIndex - 1];
+
+        // Update progress FIRST (important)
         gameState.progress = stepIndex;
 
-        // Add XP from the PREVIOUS step (the one just finished)
-        const completedStep = steps[stepIndex - 1];
         if (completedStep) {
             gameState.xp += completedStep.xp;
-            if (completedStep.badge) {
-                if (!gameState.badges.includes(completedStep.badge)) {
-                    gameState.badges.push(completedStep.badge);
-                    showBadgeModal(completedStep.badge.toUpperCase() + " badge earned!");
-                    celebrate();
 
-
-                }
+            if (completedStep.badge && !gameState.badges.includes(completedStep.badge)) {
+                gameState.badges.push(completedStep.badge);
+                showBadgeModal(completedStep.badge.toUpperCase() + " badge earned!");
+                celebrate();
             }
         }
+
         saveProgress();
     }
+
+    // Force sync & redraw
+    userProgress = gameState.progress;
     renderRoadmap();
     nav(nextScreenId);
 }
+
 
 /* -------------------- DASHBOARD UPDATER -------------------- */
 function updateDashboard() {
@@ -400,6 +404,7 @@ function playSuccess() {
 function playError() {
     playTone(220, 0.15, "square", 0.18);
 }
+
 
 
 
