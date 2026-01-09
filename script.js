@@ -120,19 +120,29 @@ const steps = [
 
 function renderRoadmap() {
     const snake = document.getElementById('progress-path');
+    if (!snake) return; // Safety check
 
     userProgress = gameState.progress;
 
     const totalLength = 2500;
-    const ratio = userProgress / steps.length;
+    // Prevent division by zero if steps is empty
+    const ratio = steps.length > 0 ? userProgress / steps.length : 0;
+    
     snake.style.strokeDashoffset = totalLength - (totalLength * ratio);
 
     steps.forEach((step, index) => {
         const el = document.getElementById(step.id);
+        
+        // Safety check: if the HTML element doesn't exist, skip this iteration
+        if (!el) {
+            console.warn(`Element with ID ${step.id} not found.`);
+            return;
+        }
+
         el.className = 'map-node';
         el.innerHTML = '';
 
-        // Completed
+        // 1. Completed Steps (Green Checkmark)
         if (index < userProgress) {
             let style = step.modColor ? `background:${step.modColor};` : '';
             el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
@@ -140,7 +150,7 @@ function renderRoadmap() {
             return;
         }
 
-        // Current
+        // 2. Current Step (Pulse Animation)
         if (index === userProgress) {
             let style = step.modColor ? `background:${step.modColor}; border-color:${step.modColor};` : '';
             el.innerHTML = `<div class="node-current" style="${style}">${step.type === 'trophy' ? '🏆' : (index + 1)}</div><div class="node-label">${step.label}</div>`;
@@ -148,13 +158,12 @@ function renderRoadmap() {
             return;
         }
 
-        // Locked
+        // 3. Locked Steps (Gray)
         el.classList.add('node-locked');
         const icon = step.type === 'trophy' ? '🏆' : '🔒';
         el.innerHTML = `<div class="node-circle">${icon}</div><div class="node-label">${step.label}</div>`;
     });
 }
-
 
     // Current
     if (index === userProgress - 1) {
@@ -173,31 +182,33 @@ function renderRoadmap() {
 
 }
 function completeStep(stepIndex, nextScreenId) {
-
-    if (stepIndex < gameState.progress) {
+    // Prevent re-completing previous steps
+    if (stepIndex < gameState.progress - 1) { // Changed logic slightly to allow re-navigation
         nav(nextScreenId);
         return;
     }
 
     const step = steps[stepIndex];
 
-    gameState.progress = stepIndex + 1;
+    // Only update progress if we are actually moving forward
+    if (stepIndex >= gameState.progress) {
+        gameState.progress = stepIndex + 1;
+        
+        if (step) {
+            gameState.xp += step.xp || 0;
 
-    if (step) {
-        gameState.xp += step.xp || 0;
-
-        if (step.badge && !gameState.badges.includes(step.badge)) {
-            gameState.badges.push(step.badge);
-            showBadgeModal(step.badge.toUpperCase() + " badge earned!");
-            celebrate();
+            if (step.badge && !gameState.badges.includes(step.badge)) {
+                gameState.badges.push(step.badge);
+                showBadgeModal(step.badge.toUpperCase() + " badge earned!");
+                celebrate();
+            }
         }
+        saveProgress();
     }
 
-    saveProgress();
     renderRoadmap();
     nav(nextScreenId);
 }
-
 
 
 
@@ -452,6 +463,7 @@ function resetApp() {
         location.reload();
     }
 }
+
 
 
 
