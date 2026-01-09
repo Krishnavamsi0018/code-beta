@@ -124,9 +124,11 @@ function renderRoadmap() {
     // Sync local var with global state
     userProgress = gameState.progress;
 
-    let progressPercent = userProgress / steps.length;
-    let newOffset = 2500 - (1500 * progressPercent);
+    const totalLength = 2500;
+    const progressRatio = userProgress / (steps.length - 1);
+    const newOffset = totalLength * (1 - progressRatio);
     snake.style.strokeDashoffset = newOffset;
+
 
     steps.forEach((step, index) => {
         const el = document.getElementById(step.id);
@@ -432,6 +434,7 @@ function resetApp() {
         location.reload();
     }
 }
+
 
 
 
