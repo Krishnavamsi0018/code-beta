@@ -185,7 +185,7 @@
                     <div style="color:#9CA3AF;"># This is a comment</div>
                 </div>
                 <div class="sticky-footer"><button class="btn btn-black"
-                        onclick=" playClick();completeStep(1, 'scrn-chap2')">Next:
+                        onclick=" playClick();completeStep(0, 'scrn-chap2')">Next:
                         Print()</button></div>
             </div>
 
@@ -227,7 +227,7 @@
                     <div style="font-family:'Courier New'; font-size:13px; color:#333;">Code Beta<br>8</div>
                 </div>
                 <div class="sticky-footer"><button class="btn btn-black"
-                        onclick="playClick();completeStep(2, 'scrn-chap3')">Next:
+                        onclick="playClick();completeStep(1, 'scrn-chap3')">Next:
                         Calculator</button></div>
             </div>
 
@@ -292,7 +292,7 @@
                 </div>
                 <div class="sticky-footer">
                     <button id="math-next-btn" class="btn btn-black" style="opacity:0.5; pointer-events:none;"
-                        onclick="playClick();completeStep(3, 'scrn-mod1-game')">
+                        onclick="playClick();completeStep(2, 'scrn-mod1-game')">
                         Unlock Final Exam
                     </button>
                 </div>
@@ -329,7 +329,7 @@
                 <div id="feedback" style="height:40px; text-align:center; font-weight:bold; margin-top:10px;"></div>
                 <div class="sticky-footer"><button id="finish-mod-btn" class="btn btn-green"
                         style="opacity:0.5; pointer-events:none;"
-                        onclick="playClick();completeStep(4, 'scrn-roadmap')">
+                        onclick="playClick();completeStep(3, 'scrn-roadmap')">
                         Module 1</button></div>
             </div>
 
@@ -381,7 +381,7 @@
                 </div>
                 <div class="sticky-footer"><button id="btn-mod2-next" class="btn btn-black"
                         style="opacity:0.5; pointer-events:none;"
-                        onclick="playClick();completeStep(5, 'scrn-mod3')">Next Module:
+                        onclick="playClick();completeStep(4, 'scrn-mod3')">Next Module:
                         Logic</button></div>
             </div>
 
@@ -459,7 +459,7 @@
                 </div>
                 <button id="finish-demo-btn" class="btn btn-black"
                     style="background:white; color:black; opacity:0.5; pointer-events:none;"
-                    onclick="playClick();completeStep(6, 'scrn-mod3-game')">Next: Final Boss</button>
+                    onclick="playClick();completeStep(5, 'scrn-mod3-game')">Next: Final Boss</button>
             </div>
 
             <div id="scrn-mod3-game" class="screen dark-mode">
@@ -556,7 +556,7 @@
                     <div style="display:flex; justify-content:space-around;">
                         <div onclick="nav('scrn-home')" style="text-align:center; opacity:0.5; cursor:pointer;"><i
                                 class="fa-solid fa-house" style="font-size:20px;"></i><br><small>Home</small></div>
-                        <div onclick="nav('scrn-roadmap')"
+                        <div onclick="playClick();completeStep(6, 'scrn-dashboard')"
                             style="text-align:center; color:var(--primary-black); cursor:pointer;"><i
                                 class="fa-solid fa-map" style="font-size:20px;"></i><br><small>Roadmap</small></div>
                         <div style="text-align:center; opacity:0.5; cursor:pointer;"><i class="fa-solid fa-user"
@@ -591,5 +591,6 @@
 
 
 </html>
+
 
 
