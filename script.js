@@ -21,6 +21,16 @@ let gameState = {
 
 // Load data on startup
 function initApp() {
+    if (!localStorage.getItem("codeBetaSave")) {
+        gameState.progress = 0;
+        gameState.xp = 0;
+        gameState.badges = [];
+        saveProgress();
+    }
+
+    loadProgress();
+    renderRoadmap();
+    updateDashboard();
     loadProgress();
     renderRoadmap();
     updateDashboard();
@@ -404,6 +414,7 @@ function playSuccess() {
 function playError() {
     playTone(220, 0.15, "square", 0.18);
 }
+
 
 
 
