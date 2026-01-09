@@ -121,26 +121,40 @@ const steps = [
 function renderRoadmap() {
     const snake = document.getElementById('progress-path');
 
-    // Sync local var with global state
     userProgress = gameState.progress;
 
     const totalLength = 2500;
-    const progressRatio = userProgress / (steps.length - 1);
-    const newOffset = totalLength * (1 - progressRatio);
-    snake.style.strokeDashoffset = newOffset;
-
+    const ratio = userProgress / steps.length;
+    snake.style.strokeDashoffset = totalLength - (totalLength * ratio);
 
     steps.forEach((step, index) => {
-    const el = document.getElementById(step.id);
-    el.className = 'map-node';
-    el.innerHTML = '';
+        const el = document.getElementById(step.id);
+        el.className = 'map-node';
+        el.innerHTML = '';
 
-    // Locked (future)
-    if (index >= userProgress) {
+        // Completed
+        if (index < userProgress) {
+            let style = step.modColor ? `background:${step.modColor};` : '';
+            el.innerHTML = `<div class="node-done" style="${style}">✓</div><div class="node-label">${step.label}</div>`;
+            el.onclick = () => nav(step.nav);
+            return;
+        }
+
+        // Current
+        if (index === userProgress) {
+            let style = step.modColor ? `background:${step.modColor}; border-color:${step.modColor};` : '';
+            el.innerHTML = `<div class="node-current" style="${style}">${step.type === 'trophy' ? '🏆' : (index + 1)}</div><div class="node-label">${step.label}</div>`;
+            el.onclick = () => nav(step.nav);
+            return;
+        }
+
+        // Locked
         el.classList.add('node-locked');
-        let icon = step.type === 'trophy' ? '🏆' : '🔒';
+        const icon = step.type === 'trophy' ? '🏆' : '🔒';
         el.innerHTML = `<div class="node-circle">${icon}</div><div class="node-label">${step.label}</div>`;
-    }
+    });
+}
+
 
     // Current
     if (index === userProgress - 1) {
@@ -160,29 +174,30 @@ function renderRoadmap() {
 }
 function completeStep(stepIndex, nextScreenId) {
 
-    if (stepIndex >= gameState.progress) {
-
-        const completedStep = steps[stepIndex];
-
-        gameState.progress = stepIndex + 1;
-
-        if (completedStep) {
-            gameState.xp += completedStep.xp;
-
-            if (completedStep.badge && !gameState.badges.includes(completedStep.badge)) {
-                gameState.badges.push(completedStep.badge);
-                showBadgeModal(completedStep.badge.toUpperCase() + " badge earned!");
-                celebrate();
-            }
-        }
-
-        saveProgress();
+    if (stepIndex < gameState.progress) {
+        nav(nextScreenId);
+        return;
     }
 
-    userProgress = gameState.progress;
+    const step = steps[stepIndex];
+
+    gameState.progress = stepIndex + 1;
+
+    if (step) {
+        gameState.xp += step.xp || 0;
+
+        if (step.badge && !gameState.badges.includes(step.badge)) {
+            gameState.badges.push(step.badge);
+            showBadgeModal(step.badge.toUpperCase() + " badge earned!");
+            celebrate();
+        }
+    }
+
+    saveProgress();
     renderRoadmap();
     nav(nextScreenId);
 }
+
 
 
 
@@ -437,6 +452,7 @@ function resetApp() {
         location.reload();
     }
 }
+
 
 
 
