@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeBeta — Learn to Code with AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Cabinet+Grotesk:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+/* ===================== RESET & TOKENS ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --surface3: #222230;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f0f8;
+  --text2: #9090aa;
+  --text3: #5a5a70;
+  --accent: #6c63ff;
+  --accent2: #8b85ff;
+  --green: #00e5a0;
+  --green2: #00c488;
+  --orange: #ff9f43;
+  --red: #ff6b6b;
+  --yellow: #ffd93d;
+  --pink: #ff6fd8;
+  --py: #3b9be0;
+  --js: #f7df1e;
+  --java: #ed8b00;
+  --cpp: #9c27b0;
+  --ruby: #cc342d;
+  --go: #00acd7;
+  --ts: #3178c6;
+  --r: #276dc3;
+  --shadow-glow: 0 0 40px rgba(108,99,255,0.15);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+  --radius: 16px;
+  --radius-lg: 24px;
+  --font: 'Space Grotesk', sans-serif;
+  --font-display: 'Cabinet Grotesk', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --sidebar-w: 260px;
+  --nav-h: 64px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 99px; }
+
+/* ===================== APP SHELL ===================== */
+#app { display: flex; min-height: 100vh; position: relative; }
+
+/* ===================== SIDEBAR ===================== */
+#sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; margin-bottom: 32px;
+}
+.logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: white;
+  font-family: var(--font-display);
+  flex-shrink: 0;
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 800;
+  background: linear-gradient(135deg, var(--text), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.sidebar-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text3);
+  padding: 0 12px; margin: 20px 0 8px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 12px;
+  font-size: 14px; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: rgba(108,99,255,0.15); color: var(--accent2); }
+.nav-item .nav-icon { width: 20px; text-align: center; font-size: 15px; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: white; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 99px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.user-pill {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 12px; cursor: pointer;
+  transition: 0.2s;
+}
+.user-pill:hover { background: var(--surface2); }
+.user-avatar {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 600; }
+.user-xp { font-size: 11px; color: var(--text3); }
+
+/* ===================== TOPBAR (mobile) ===================== */
+#topbar {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  padding: 0 20px;
+  z-index: 200;
+  gap: 16px;
+}
+.hamburger {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--surface2); border: none; color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; flex-shrink: 0;
+}
+#topbar .logo-text { font-size: 17px; }
+#topbar .user-avatar { width: 32px; height: 32px; margin-left: auto; }
+
+/* ===================== MAIN CONTENT ===================== */
+#main {
+  margin-left: var(--sidebar-w);
+  flex: 1; min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+/* ===================== VIEWS ===================== */
+.view {
+  display: none;
+  flex: 1;
+  padding: 40px 48px;
+  animation: viewIn 0.3s ease;
+}
+.view.active { display: block; }
+
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================== AUTH VIEWS (full page, no sidebar) ===================== */
+#app.auth-mode #sidebar { display: none; }
+#app.auth-mode #topbar { display: none; }
+#app.auth-mode #main { margin-left: 0; }
+#app.auth-mode .view { padding: 0; display: none; }
+#app.auth-mode .view.active { display: block; }
+#app.auth-mode .view.active .auth-layout { display: grid; }
+#app.auth-mode #mobile-nav { display: none !important; }
+
+.auth-layout {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.auth-panel-left {
+  background: linear-gradient(145deg, #0e0e1a, #1a1030);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px; position: relative; overflow: hidden;
+}
+.auth-panel-left::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(108,99,255,0.15), transparent 60%),
+              radial-gradient(circle at 80% 20%, rgba(0,229,160,0.08), transparent 50%);
+}
+.auth-panel-left .big-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 900; line-height: 1.1;
+  position: relative; z-index: 1;
+  text-align: center;
+}
+.auth-panel-left .big-title span { color: var(--accent2); }
+.auth-panel-left p { color: var(--text2); margin-top: 16px; font-size: 16px; position: relative; z-index: 1; text-align: center; }
+.auth-features { display: flex; flex-direction: column; gap: 14px; margin-top: 40px; position: relative; z-index: 1; }
+.auth-feat {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.05); padding: 14px 18px;
+  border-radius: 14px; border: 1px solid var(--border);
+}
+.auth-feat-icon { font-size: 22px; }
+.auth-feat-text { font-size: 13px; color: var(--text2); font-weight: 500; }
+
+.auth-panel-right {
+  background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px;
+}
+.auth-form { width: 100%; max-width: 420px; }
+.auth-form h2 {
+  font-family: var(--font-display);
+  font-size: 30px; font-weight: 800; margin-bottom: 6px;
+}
+.auth-form p { color: var(--text2); font-size: 14px; margin-bottom: 32px; }
+
+/* ===================== FORM ELEMENTS ===================== */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 8px; }
+.form-input {
+  width: 100%; padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 12px; color: var(--text); font-size: 14px; font-family: var(--font);
+  transition: 0.2s; outline: none;
+}
+.form-input:focus { border-color: var(--accent); background: var(--surface2); box-shadow: 0 0 0 3px rgba(108,99,255,0.15); }
+.form-input::placeholder { color: var(--text3); }
+
+/* ===================== BUTTONS ===================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 24px; border-radius: 12px;
+  font-size: 14px; font-weight: 700; font-family: var(--font);
+  border: none; cursor: pointer; transition: all 0.2s;
+  text-decoration: none;
+}
+.btn:active { transform: scale(0.97); }
+.btn-full { width: 100%; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #5a54e0);
+  color: white; box-shadow: 0 6px 20px rgba(108,99,255,0.35);
+}
+.btn-primary:hover { box-shadow: 0 8px 28px rgba(108,99,255,0.5); transform: translateY(-1px); }
+.btn-green { background: var(--green); color: #001a12; box-shadow: 0 6px 20px rgba(0,229,160,0.3); }
+.btn-green:hover { box-shadow: 0 8px 28px rgba(0,229,160,0.45); transform: translateY(-1px); }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
+.btn-ghost:hover { background: var(--surface3); }
+.btn-sm { padding: 8px 16px; font-size: 12px; border-radius: 8px; }
+.btn-danger { background: rgba(255,107,107,0.15); color: var(--red); border: 1px solid rgba(255,107,107,0.3); }
+
+/* ===================== CARDS ===================== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px; transition: all 0.25s;
+}
+.card:hover { border-color: var(--border2); box-shadow: var(--shadow-card); }
+.card-clickable { cursor: pointer; }
+.card-clickable:hover { transform: translateY(-3px); border-color: rgba(108,99,255,0.3); }
+.card-selected { border-color: var(--accent) !important; background: rgba(108,99,255,0.08) !important; }
+
+/* ===================== PAGE HEADERS ===================== */
+.page-header { margin-bottom: 40px; }
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 36px); font-weight: 800;
+  line-height: 1.2;
+}
+.page-header p { color: var(--text2); font-size: 15px; margin-top: 8px; }
+.page-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(108,99,255,0.12); color: var(--accent2);
+  padding: 5px 12px; border-radius: 99px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* ===================== GRID LAYOUTS ===================== */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+/* ===================== STAT CARDS ===================== */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex; align-items: center; gap: 16px;
+}
+.stat-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.stat-icon.green { background: rgba(0,229,160,0.12); }
+.stat-icon.purple { background: rgba(108,99,255,0.12); }
+.stat-icon.orange { background: rgba(255,159,67,0.12); }
+.stat-icon.pink { background: rgba(255,111,216,0.12); }
+.stat-num { font-family: var(--font-display); font-size: 28px; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ===================== LANGUAGE CARDS ===================== */
+.lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+
+.lang-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px 20px;
+  cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+  text-align: center;
+}
+.lang-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 99px 99px 0 0;
+  opacity: 0; transition: 0.25s;
+}
+.lang-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+.lang-card:hover::before { opacity: 1; }
+.lang-card.selected { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+.lang-card.selected::before { opacity: 1; background: linear-gradient(90deg, var(--accent), var(--pink)) !important; }
+.lang-card.locked { opacity: 0.45; cursor: default; }
+.lang-card.locked:hover { transform: none; }
+.lang-logo { font-size: 42px; margin-bottom: 12px; display: block; }
+.lang-name { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+.lang-desc { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.lang-tag {
+  display: inline-block; margin-top: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  padding: 3px 10px; border-radius: 99px;
+}
+.tag-active { background: rgba(0,229,160,0.15); color: var(--green); }
+.tag-soon { background: var(--surface3); color: var(--text3); }
+
+.lang-py::before { background: linear-gradient(90deg, #3b9be0, #ffde57); }
+.lang-js::before { background: linear-gradient(90deg, #f7df1e, #f0a800); }
+.lang-java::before { background: linear-gradient(90deg, #ed8b00, #005082); }
+.lang-cpp::before { background: linear-gradient(90deg, #9c27b0, #3f51b5); }
+.lang-ts::before { background: linear-gradient(90deg, #3178c6, #1565c0); }
+.lang-go::before { background: linear-gradient(90deg, #00acd7, #007d9c); }
+.lang-ruby::before { background: linear-gradient(90deg, #cc342d, #801515); }
+.lang-r::before { background: linear-gradient(90deg, #276dc3, #1a4882); }
+
+/* ===================== LEVEL SELECTOR ===================== */
+.level-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.level-card {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px 16px; text-align: center;
+  cursor: pointer; transition: all 0.25s;
+}
+.level-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.level-card.selected { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+.level-emoji { font-size: 32px; margin-bottom: 10px; }
+.level-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+.level-desc { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+/* ===================== ROADMAP ===================== */
+.roadmap-container { display: flex; flex-direction: column; gap: 32px; max-width: 720px; }
+.module-section { }
+.module-title {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.module-num {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+.module-title h3 { font-size: 15px; font-weight: 700; }
+.module-title .module-prog { margin-left: auto; font-size: 12px; color: var(--text3); }
+
+.lesson-list { display: flex; flex-direction: column; gap: 8px; }
+.lesson-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.2s;
+}
+.lesson-item:hover { border-color: var(--border2); transform: translateX(4px); }
+.lesson-item.completed { border-color: rgba(0,229,160,0.2); background: rgba(0,229,160,0.04); }
+.lesson-item.active-lesson { border-color: var(--accent); background: rgba(108,99,255,0.08); box-shadow: 0 0 0 3px rgba(108,99,255,0.1); }
+.lesson-item.locked { opacity: 0.45; cursor: default; pointer-events: none; }
+.lesson-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.lesson-icon.done { background: rgba(0,229,160,0.15); }
+.lesson-icon.current { background: rgba(108,99,255,0.15); }
+.lesson-icon.todo { background: var(--surface3); }
+.lesson-icon.challenge { background: rgba(255,159,67,0.15); }
+.lesson-info { flex: 1; }
+.lesson-name { font-size: 14px; font-weight: 600; }
+.lesson-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.lesson-xp {
+  background: rgba(108,99,255,0.12); color: var(--accent2);
+  padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===================== LEARN SCREEN ===================== */
+.learn-layout {
+  display: grid; grid-template-columns: 1fr 420px; gap: 32px; max-width: 1200px;
+}
+.learn-content { }
+.learn-sidebar-panel {
+  display: flex; flex-direction: column; gap: 16px;
+  position: sticky; top: 20px;
+}
+
+.lesson-header { margin-bottom: 28px; }
+.lesson-header h2 { font-family: var(--font-display); font-size: 26px; font-weight: 800; }
+.lesson-progress-bar { height: 5px; background: var(--surface3); border-radius: 99px; margin-top: 16px; overflow: hidden; }
+.lesson-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 99px; transition: width 0.5s ease; }
+
+.content-block { margin-bottom: 28px; line-height: 1.75; font-size: 15px; color: var(--text2); }
+.content-block p { margin-bottom: 14px; }
+.content-block strong { color: var(--text); }
+.content-block h3 { color: var(--text); font-size: 17px; margin-bottom: 10px; margin-top: 20px; }
+
+/* Code block */
+.code-block {
+  background: #0d1117; border: 1px solid #30363d;
+  border-radius: 12px; overflow: hidden; margin: 16px 0;
+}
+.code-block-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-block-lang { font-size: 11px; color: #8b949e; font-weight: 600; font-family: var(--font-mono); }
+.code-copy-btn { font-size: 11px; color: #8b949e; cursor: pointer; background: none; border: none; font-family: var(--font); padding: 2px 8px; border-radius: 6px; transition: 0.2s; }
+.code-copy-btn:hover { background: #21262d; color: var(--text); }
+.code-block pre { padding: 16px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; color: #e6edf3; }
+.tok-kw { color: #ff7b72; }
+.tok-fn { color: #d2a8ff; }
+.tok-str { color: #a5d6ff; }
+.tok-num { color: #79c0ff; }
+.tok-cmt { color: #8b949e; font-style: italic; }
+.tok-cls { color: #ffa657; }
+.tok-bool { color: #79c0ff; }
+.tok-op { color: #ff7b72; }
+
+/* Callout blocks */
+.callout {
+  display: flex; gap: 12px; padding: 16px 18px;
+  border-radius: 12px; margin: 16px 0;
+  border-left: 3px solid;
+}
+.callout-info { background: rgba(59,155,224,0.08); border-color: var(--py); }
+.callout-tip { background: rgba(0,229,160,0.07); border-color: var(--green); }
+.callout-warn { background: rgba(255,159,67,0.08); border-color: var(--orange); }
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.callout-text strong { color: var(--text); }
+
+/* AI Tutor Chat Panel */
+.ai-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column;
+  height: 460px;
+}
+.ai-panel-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.ai-avatar {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.ai-status { display: flex; flex-direction: column; }
+.ai-name { font-size: 13px; font-weight: 700; }
+.ai-online { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 4px; }
+.ai-online::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; }
+.ai-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.ai-msg { max-width: 85%; }
+.ai-msg.bot { align-self: flex-start; }
+.ai-msg.user { align-self: flex-end; }
+.ai-bubble {
+  padding: 10px 14px; border-radius: 14px;
+  font-size: 13px; line-height: 1.55;
+}
+.ai-msg.bot .ai-bubble { background: var(--surface2); color: var(--text); border-radius: 4px 14px 14px 14px; }
+.ai-msg.user .ai-bubble { background: var(--accent); color: white; border-radius: 14px 4px 14px 14px; }
+.ai-typing { display: flex; gap: 4px; padding: 12px 14px; background: var(--surface2); border-radius: 4px 14px 14px 14px; width: 56px; }
+.ai-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); animation: typing 1.2s infinite; }
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
+.ai-input-row { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); }
+.ai-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 14px; color: var(--text);
+  font-size: 13px; font-family: var(--font); outline: none; transition: 0.2s;
+}
+.ai-input:focus { border-color: var(--accent); }
+.ai-send { width: 36px; height: 36px; background: var(--accent); border: none; border-radius: 10px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 13px; flex-shrink: 0; }
+.ai-send:hover { background: var(--accent2); }
+
+/* ===================== QUIZ WIDGET ===================== */
+.quiz-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px; margin-top: 24px;
+}
+.quiz-q { font-size: 16px; font-weight: 600; margin-bottom: 20px; line-height: 1.5; }
+.quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+.quiz-opt {
+  padding: 14px 18px; border-radius: 12px;
+  background: var(--surface2); border: 2px solid var(--border);
+  cursor: pointer; font-size: 14px; transition: all 0.2s; text-align: left;
+  display: flex; align-items: center; gap: 12px;
+}
+.quiz-opt:hover { border-color: var(--accent); background: rgba(108,99,255,0.06); }
+.quiz-opt.correct { border-color: var(--green) !important; background: rgba(0,229,160,0.08) !important; color: var(--green); }
+.quiz-opt.wrong { border-color: var(--red) !important; background: rgba(255,107,107,0.08) !important; color: var(--red); }
+.quiz-opt-letter { width: 26px; height: 26px; border-radius: 8px; background: var(--surface3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.quiz-feedback { margin-top: 16px; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; display: none; }
+.quiz-feedback.show { display: flex; align-items: center; gap: 8px; }
+.quiz-feedback.correct-fb { background: rgba(0,229,160,0.1); color: var(--green); }
+.quiz-feedback.wrong-fb { background: rgba(255,107,107,0.1); color: var(--red); }
+
+/* Code challenge */
+.code-challenge {
+  background: #0d1117; border: 1px solid #30363d;
+  border-radius: 14px; overflow: hidden; margin-top: 24px;
+}
+.challenge-header {
+  padding: 14px 20px; background: #161b22; border-bottom: 1px solid #30363d;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.challenge-title { font-size: 13px; font-weight: 700; color: var(--orange); }
+.challenge-editor {
+  width: 100%; min-height: 120px; background: transparent;
+  border: none; outline: none; padding: 16px 20px;
+  font-family: var(--font-mono); font-size: 13px; color: #e6edf3; resize: vertical; line-height: 1.65;
+}
+.challenge-run-bar {
+  padding: 12px 20px; background: #161b22; border-top: 1px solid #30363d;
+  display: flex; align-items: center; gap: 12px;
+}
+.challenge-output {
+  margin-top: 8px; padding: 12px 20px;
+  font-family: var(--font-mono); font-size: 12px; color: #8b949e;
+  background: #0a0e14; border-top: 1px solid #30363d;
+  min-height: 40px; white-space: pre-wrap;
+}
+
+/* ===================== PROGRESS VIEW ===================== */
+.progress-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.progress-chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.xp-bars { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.xp-bar-item { }
+.xp-bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+.xp-bar-label span:first-child { color: var(--text2); font-weight: 600; }
+.xp-bar-label span:last-child { color: var(--text3); }
+.xp-bar-track { height: 8px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+.xp-bar-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+
+.badges-grid { display: flex; flex-direction: column; gap: 12px; }
+.badge-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border); transition: 0.2s;
+}
+.badge-item.earned { border-color: rgba(255,211,61,0.3); background: rgba(255,211,61,0.05); }
+.badge-icon { font-size: 28px; }
+.badge-info h4 { font-size: 14px; font-weight: 700; }
+.badge-info p { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.badge-status { margin-left: auto; }
+.badge-earned-tag { background: rgba(255,211,61,0.15); color: var(--yellow); padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+.badge-locked-tag { background: var(--surface3); color: var(--text3); padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+
+/* ===================== LEADERBOARD ===================== */
+.leaderboard { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+.lb-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  transition: 0.2s;
+}
+.lb-item:hover { transform: translateX(4px); border-color: var(--border2); }
+.lb-item.me { border-color: rgba(108,99,255,0.4); background: rgba(108,99,255,0.06); }
+.lb-rank { font-size: 13px; font-weight: 800; width: 28px; text-align: center; color: var(--text3); }
+.lb-rank.gold { color: #ffd700; font-size: 18px; }
+.lb-rank.silver { color: #c0c0c0; font-size: 18px; }
+.lb-rank.bronze { color: #cd7f32; font-size: 18px; }
+.lb-avatar { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.lb-name { font-size: 14px; font-weight: 600; flex: 1; }
+.lb-xp { font-size: 13px; font-weight: 700; color: var(--accent2); }
+.lb-badge { font-size: 14px; margin-left: 4px; }
+.lb-streak { font-size: 11px; color: var(--orange); font-weight: 600; }
+
+/* ===================== CHALLENGE ARENA ===================== */
+.arena-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px;
+  display: flex; flex-direction: column; gap: 16px; cursor: pointer; transition: all 0.25s;
+}
+.arena-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+.arena-difficulty { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; }
+.diff-easy { color: var(--green); }
+.diff-medium { color: var(--orange); }
+.diff-hard { color: var(--red); }
+.arena-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.arena-desc { font-size: 13px; color: var(--text3); line-height: 1.6; }
+.arena-footer { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.arena-lang { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text3); }
+
+/* ===================== MODALS ===================== */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+  z-index: 900; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-backdrop.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-lg); padding: 32px;
+  width: 90%; max-width: 440px;
+  transform: scale(0.9) translateY(20px); transition: all 0.3s cubic-bezier(.4,0,.2,1);
+  text-align: center;
+}
+.modal-backdrop.show .modal { transform: scale(1) translateY(0); }
+.modal-emoji { font-size: 48px; margin-bottom: 16px; }
+.modal h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+.modal p { color: var(--text2); font-size: 14px; line-height: 1.65; margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 12px; justify-content: center; }
+
+/* ===================== TOAST ===================== */
+.toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.toast {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 600; min-width: 220px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  animation: toastIn 0.3s ease; pointer-events: all;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.toast.success { border-color: rgba(0,229,160,0.3); }
+.toast.error { border-color: rgba(255,107,107,0.3); }
+.toast.info { border-color: rgba(108,99,255,0.3); }
+
+/* ===================== DIVIDER ===================== */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+/* ===================== LOADING ===================== */
+.loading-spinner {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--surface3); border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===================== SECTION TABS ===================== */
+.tab-bar { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; width: fit-content; margin-bottom: 28px; }
+.tab {
+  padding: 8px 18px; border-radius: 9px;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text3);
+}
+.tab.active { background: var(--surface3); color: var(--text); }
+
+/* ===================== PROGRESS CIRCLE ===================== */
+.progress-ring { transform: rotate(-90deg); }
+.progress-ring-bg { fill: none; stroke: var(--surface3); }
+.progress-ring-fill { fill: none; stroke: url(#ring-grad); stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+
+/* ===================== MOBILE NAV ===================== */
+#mobile-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 10px 20px 20px; z-index: 150;
+  justify-content: space-around;
+}
+.mnav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; color: var(--text3); cursor: pointer;
+  padding: 6px 12px; border-radius: 10px; transition: 0.2s;
+}
+.mnav-item i { font-size: 19px; }
+.mnav-item.active { color: var(--accent2); }
+.mnav-badge { position: absolute; top: -3px; right: -3px; background: var(--red); width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface); }
+
+/* ===================== OVERLAY for mobile sidebar ===================== */
+#sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 99;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .learn-layout { grid-template-columns: 1fr; }
+  .learn-sidebar-panel { position: static; }
+  .progress-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-overlay { display: none; }
+  #sidebar-overlay.show { display: block; }
+  #topbar { display: flex; }
+  #mobile-nav { display: flex; }
+  #main { margin-left: 0; padding-bottom: 80px; }
+  .view { padding: 20px 20px; padding-top: 80px; }
+  .auth-layout { grid-template-columns: 1fr; }
+  .auth-panel-left { display: none; }
+  .auth-panel-right { padding: 40px 24px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .level-cards { grid-template-columns: 1fr; gap: 10px; }
+  .lang-grid { grid-template-columns: repeat(2, 1fr); }
+  .page-header h1 { font-size: 24px; }
+  .stat-num { font-size: 22px; }
+  .progress-ring-wrap { transform: scale(0.85); }
+  #app.auth-mode .view.active { display: block; }
+  #app.auth-mode .view { padding: 0; }
+}
+
+@media (max-width: 480px) {
+  .lang-grid { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .view { padding: 14px; padding-top: 75px; }
+}
+
+/* ===================== UTILS ===================== */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-6 { margin-top: 24px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-muted { color: var(--text3); }
+.text-accent { color: var(--accent2); }
+.text-green { color: var(--green); }
+.text-orange { color: var(--orange); }
+.font-bold { font-weight: 700; }
+.w-full { width: 100%; }
+.hidden { display: none !important; }
+
+/* ===================== ONBOARDING ===================== */
+.onboard-steps { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; }
+.onboard-step { width: 8px; height: 8px; border-radius: 99px; background: var(--surface3); transition: 0.3s; }
+.onboard-step.active { background: var(--accent); width: 24px; }
+.onboard-step.done { background: var(--green); }
+</style>
+</head>
+<body>
+
+<div id="app" class="auth-mode">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">CB</div>
+      <span class="logo-text">CodeBeta</span>
+    </div>
+    <div class="sidebar-section-label">Learning</div>
+    <div class="nav-item active" onclick="navTo('view-home')" data-view="view-home">
+      <span class="nav-icon"><i class="fa-solid fa-house"></i></span> Dashboard
+    </div>
+    <div class="nav-item" onclick="navTo('view-roadmap')" data-view="view-roadmap">
+      <span class="nav-icon"><i class="fa-solid fa-map"></i></span> My Roadmap
+    </div>
+    <div class="nav-item" onclick="navTo('view-learn')" data-view="view-learn">
+      <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span> Learn
+    </div>
+    <div class="nav-item" onclick="navTo('view-challenges')" data-view="view-challenges">
+      <span class="nav-icon"><i class="fa-solid fa-code"></i></span> Challenges
+      <span class="nav-badge">New</span>
+    </div>
+    <div class="sidebar-section-label">Community</div>
+    <div class="nav-item" onclick="navTo('view-leaderboard')" data-view="view-leaderboard">
+      <span class="nav-icon"><i class="fa-solid fa-trophy"></i></span> Leaderboard
+    </div>
+    <div class="sidebar-section-label">You</div>
+    <div class="nav-item" onclick="navTo('view-progress')" data-view="view-progress">
+      <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span> Progress
+    </div>
+    <div class="sidebar-section-label" id="sb-reset-label" onclick="resetAll()" style="cursor:pointer;color:var(--red);opacity:0.5" title="Reset Progress">⚙ Reset Progress</div>
+    <div class="sidebar-footer">
+      <div class="user-pill" onclick="navTo('view-progress')">
+        <div class="user-avatar" id="sb-avatar">A</div>
+        <div>
+          <div class="user-name" id="sb-name">Learner</div>
+          <div class="user-xp" id="sb-xp-label">0 XP</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== TOPBAR (mobile) ===== -->
+  <div id="topbar">
+    <button class="hamburger" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <span class="logo-text">CodeBeta</span>
+    <div class="user-avatar" id="tb-avatar" onclick="navTo('view-progress')">A</div>
+  </div>
+
+  <!-- ===== SIDEBAR OVERLAY ===== -->
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- ===== MAIN ===== -->
+  <div id="main">
+
+    <!-- ======== ONBOARDING VIEWS (auth-mode) ======== -->
+    <div id="view-landing" class="view active">
+      <div class="auth-layout">
+        <div class="auth-panel-left">
+          <div class="big-title">Learn to Code.<br><span>Build the Future.</span></div>
+          <p>AI-powered lessons across 8 languages. Real challenges, real badges, real growth.</p>
+          <div class="auth-features">
+            <div class="auth-feat"><span class="auth-feat-icon">🤖</span><span class="auth-feat-text">AI Tutor available 24/7 — ask anything</span></div>
+            <div class="auth-feat"><span class="auth-feat-icon">🗺️</span><span class="auth-feat-text">Adaptive roadmap for every language & level</span></div>
+            <div class="auth-feat"><span class="auth-feat-icon">🏆</span><span class="auth-feat-text">Gamified XP, badges & global leaderboard</span></div>
+            <div class="auth-feat"><span class="auth-feat-icon">⚡</span><span class="auth-feat-text">Code challenges with instant AI feedback</span></div>
+          </div>
+        </div>
+        <div class="auth-panel-right">
+          <div class="auth-form">
+            <div class="page-badge">Welcome to CodeBeta</div>
+            <h2>Start Learning Today</h2>
+            <p>Free to start. No credit card required.</p>
+            <div class="form-group">
+              <label>Your Name</label>
+              <input class="form-input" id="inp-name" placeholder="Alex Johnson" type="text">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input class="form-input" id="inp-email" placeholder="alex@email.com" type="email">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input class="form-input" id="inp-pw" placeholder="Create a strong password" type="password">
+            </div>
+            <button class="btn btn-primary btn-full mt-4" onclick="doSignup()">Create Free Account →</button>
+            <div class="divider"></div>
+            <p style="text-align:center; font-size:13px; color:var(--text3)">
+              Already have an account? <span onclick="navTo('view-login')" style="color:var(--accent2);cursor:pointer;font-weight:600">Log In</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-login" class="view">
+      <div class="auth-layout">
+        <div class="auth-panel-left">
+          <div class="big-title">Good to<br><span>See You Again</span></div>
+          <p>Pick up exactly where you left off. Your progress is saved.</p>
+          <div class="auth-features">
+            <div class="auth-feat"><span class="auth-feat-icon">🔥</span><span class="auth-feat-text">Daily streaks keep you consistent</span></div>
+            <div class="auth-feat"><span class="auth-feat-icon">📈</span><span class="auth-feat-text">Track your growth with detailed analytics</span></div>
+            <div class="auth-feat"><span class="auth-feat-icon">🎯</span><span class="auth-feat-text">Personalized challenges based on your level</span></div>
+          </div>
+        </div>
+        <div class="auth-panel-right">
+          <div class="auth-form">
+            <div class="page-badge">Welcome Back</div>
+            <h2>Log In</h2>
+            <p>Continue your coding journey.</p>
+            <div class="form-group">
+              <label>Email</label>
+              <input class="form-input" id="li-email" placeholder="your@email.com" type="email">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input class="form-input" id="li-pw" placeholder="Your password" type="password">
+            </div>
+            <button class="btn btn-primary btn-full mt-4" onclick="doLogin()">Log In →</button>
+            <div class="divider"></div>
+            <p style="text-align:center; font-size:13px; color:var(--text3)">
+              New here? <span onclick="navTo('view-landing')" style="color:var(--accent2);cursor:pointer;font-weight:600">Create Account</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-onboard1" class="view">
+      <div style="max-width:600px;margin:0 auto;padding:60px 24px;text-align:center">
+        <div class="onboard-steps">
+          <div class="onboard-step active"></div>
+          <div class="onboard-step"></div>
+          <div class="onboard-step"></div>
+        </div>
+        <div class="page-badge">Step 1 of 3</div>
+        <h1 style="font-family:var(--font-display);font-size:32px;font-weight:900;margin:12px 0 8px">Choose Your Level</h1>
+        <p style="color:var(--text2);margin-bottom:32px">Be honest — we'll adapt the content for you.</p>
+        <div class="level-cards">
+          <div class="level-card" onclick="selLevel('Beginner',this)">
+            <div class="level-emoji">🌱</div>
+            <div class="level-name">Beginner</div>
+            <div class="level-desc">Never coded before</div>
+          </div>
+          <div class="level-card" onclick="selLevel('Intermediate',this)">
+            <div class="level-emoji">🔨</div>
+            <div class="level-name">Intermediate</div>
+            <div class="level-desc">Know some syntax</div>
+          </div>
+          <div class="level-card" onclick="selLevel('Advanced',this)">
+            <div class="level-emoji">🦾</div>
+            <div class="level-name">Advanced</div>
+            <div class="level-desc">Ready for challenges</div>
+          </div>
+        </div>
+        <button class="btn btn-primary mt-6" style="min-width:200px" onclick="nextOnboard(2)">Continue →</button>
+      </div>
+    </div>
+
+    <div id="view-onboard2" class="view">
+      <div style="max-width:800px;margin:0 auto;padding:60px 24px;text-align:center">
+        <div class="onboard-steps">
+          <div class="onboard-step done"></div>
+          <div class="onboard-step active"></div>
+          <div class="onboard-step"></div>
+        </div>
+        <div class="page-badge">Step 2 of 3</div>
+        <h1 style="font-family:var(--font-display);font-size:32px;font-weight:900;margin:12px 0 8px">Pick Your Language</h1>
+        <p style="color:var(--text2);margin-bottom:32px">All paths are full curriculums. You can add more later.</p>
+        <div class="lang-grid" id="onboard-lang-grid">
+          <!-- dynamically populated -->
+        </div>
+        <button class="btn btn-primary mt-6" style="min-width:200px" onclick="nextOnboard(3)">Continue →</button>
+      </div>
+    </div>
+
+    <div id="view-onboard3" class="view">
+      <div style="max-width:520px;margin:0 auto;padding:60px 24px;text-align:center">
+        <div class="onboard-steps">
+          <div class="onboard-step done"></div>
+          <div class="onboard-step done"></div>
+          <div class="onboard-step active"></div>
+        </div>
+        <div class="page-badge">Almost There!</div>
+        <div style="font-size:64px;margin:24px 0">🚀</div>
+        <h1 style="font-family:var(--font-display);font-size:32px;font-weight:900;margin-bottom:12px">You're all set,<br><span id="onboard-name-show">Coder</span>!</h1>
+        <p style="color:var(--text2);font-size:15px;margin-bottom:12px">Your personalised <strong id="summary-lang">Python</strong> roadmap is ready.<br>Level: <strong id="summary-level">Beginner</strong></p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin:28px 0;text-align:left">
+          <div class="auth-feat"><span class="auth-feat-icon">📅</span><span class="auth-feat-text">Aim for 20 min/day to build a solid streak</span></div>
+          <div class="auth-feat"><span class="auth-feat-icon">🤖</span><span class="auth-feat-text">Use the AI Tutor whenever you're stuck</span></div>
+          <div class="auth-feat"><span class="auth-feat-icon">🏆</span><span class="auth-feat-text">Earn badges as you complete modules</span></div>
+        </div>
+        <button class="btn btn-green btn-full" onclick="enterApp()">Start Learning 🚀</button>
+      </div>
+    </div>
+
+    <!-- ======== APP VIEWS ======== -->
+
+    <!-- DASHBOARD -->
+    <div id="view-home" class="view">
+      <div class="page-header flex justify-between items-center" style="flex-wrap:wrap;gap:16px">
+        <div>
+          <div class="page-badge">Dashboard</div>
+          <h1>Welcome back, <span id="dash-name">Coder</span> 👋</h1>
+          <p id="dash-sub">Ready to continue your journey?</p>
+        </div>
+        <button class="btn btn-primary" onclick="navTo('view-roadmap')"><i class="fa-solid fa-map"></i> Continue Learning</button>
+      </div>
+
+      <div class="grid-4 mb-6">
+        <div class="stat-card"><div class="stat-icon green">🔥</div><div><div class="stat-num" id="d-streak">1</div><div class="stat-label">Day Streak</div></div></div>
+        <div class="stat-card"><div class="stat-icon purple">💎</div><div><div class="stat-num" id="d-xp">0</div><div class="stat-label">Total XP</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange">📚</div><div><div class="stat-num" id="d-lessons">0</div><div class="stat-label">Lessons Done</div></div></div>
+        <div class="stat-card"><div class="stat-icon pink">🏅</div><div><div class="stat-num" id="d-badges">0</div><div class="stat-label">Badges Earned</div></div></div>
+      </div>
+
+      <div class="grid-2" style="max-width:900px">
+        <div class="card">
+          <div class="flex justify-between items-center mb-4">
+            <h3 style="font-size:16px;font-weight:700">📍 Current Module</h3>
+            <span class="text-xs text-muted" id="dash-prog-label">0 / 7 done</span>
+          </div>
+          <div id="dash-current-lesson" style="padding:14px;background:var(--surface2);border-radius:12px;margin-bottom:14px">
+            <div class="text-sm font-bold" id="dash-lesson-name">Chapter 1: Introduction</div>
+            <div class="text-xs text-muted mt-2">Click to continue</div>
+          </div>
+          <div style="height:6px;background:var(--surface3);border-radius:99px;overflow:hidden">
+            <div id="dash-prog-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:99px;transition:width 0.8s;width:0%"></div>
+          </div>
+          <button class="btn btn-primary btn-full mt-4" onclick="navTo('view-learn')">Resume Lesson →</button>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">🤖 Quick Ask AI</h3>
+          <p class="text-sm text-muted mb-4">Get instant help from your AI tutor on any coding concept.</p>
+          <div id="dash-quick-chat" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+            <div class="ai-msg bot"><div class="ai-bubble">Hi! I'm Byte, your AI coding tutor. What would you like to learn today? 🚀</div></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input class="ai-input" id="dash-q-input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')dashQuickAsk()">
+            <button class="ai-send" onclick="dashQuickAsk()"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:28px;max-width:900px">
+        <div class="flex justify-between items-center mb-4">
+          <h3 style="font-size:16px;font-weight:700">🏆 Achievements</h3>
+          <span class="text-sm text-accent" onclick="navTo('view-progress')" style="cursor:pointer">View all →</span>
+        </div>
+        <div class="grid-3" id="dash-badges-row"></div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div id="view-roadmap" class="view">
+      <div class="page-header">
+        <div class="page-badge" id="roadmap-lang-badge">Python Path</div>
+        <h1>Your Learning Roadmap</h1>
+        <p>Complete each module in order to unlock the next one.</p>
+      </div>
+      <div class="roadmap-container" id="roadmap-container">
+        <!-- Dynamic -->
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div id="view-learn" class="view">
+      <div class="learn-layout">
+        <div class="learn-content">
+          <div class="lesson-header">
+            <div class="flex justify-between items-center">
+              <button class="btn btn-ghost btn-sm" onclick="navTo('view-roadmap')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+              <span class="text-xs text-muted" id="lesson-step-label">Step 1 of 7</span>
+            </div>
+            <h2 id="lesson-title" style="margin-top:16px">Loading Lesson...</h2>
+            <div class="lesson-progress-bar"><div class="lesson-progress-fill" id="lesson-prog-fill" style="width:10%"></div></div>
+          </div>
+          <div id="lesson-body"></div>
+          <div id="lesson-quiz-area"></div>
+          <div style="display:flex;gap:12px;margin-top:28px" id="lesson-nav-btns">
+            <button class="btn btn-ghost" id="btn-lesson-prev" onclick="lessonPrev()">← Prev</button>
+            <button class="btn btn-primary" id="btn-lesson-next" onclick="lessonNext()" style="flex:1">Continue →</button>
+          </div>
+        </div>
+        <div class="learn-sidebar-panel">
+          <div class="ai-panel">
+            <div class="ai-panel-header">
+              <div class="ai-avatar">🤖</div>
+              <div class="ai-status">
+                <span class="ai-name">Byte — AI Tutor</span>
+                <span class="ai-online">Online</span>
+              </div>
+            </div>
+            <div class="ai-messages" id="ai-chat-box">
+              <div class="ai-msg bot"><div class="ai-bubble">Hey! I'm Byte. Ask me anything about this lesson 🚀</div></div>
+            </div>
+            <div class="ai-input-row">
+              <input class="ai-input" id="ai-question-input" placeholder="Ask Byte anything..." onkeydown="if(event.key==='Enter')sendAIQuestion()">
+              <button class="ai-send" onclick="sendAIQuestion()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="card" style="padding:18px">
+            <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">📋 Module Progress</h4>
+            <div id="lesson-sidebar-list" style="display:flex;flex-direction:column;gap:6px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHALLENGES -->
+    <div id="view-challenges" class="view">
+      <div class="page-header">
+        <div class="page-badge">Challenge Arena</div>
+        <h1>Code Challenges</h1>
+        <p>Sharpen your skills with real-world problems. Earn bonus XP.</p>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active" onclick="filterChallenges('all',this)">All</div>
+        <div class="tab" onclick="filterChallenges('easy',this)">Easy</div>
+        <div class="tab" onclick="filterChallenges('medium',this)">Medium</div>
+        <div class="tab" onclick="filterChallenges('hard',this)">Hard</div>
+      </div>
+      <div class="grid-auto" id="challenges-grid"></div>
+    </div>
+
+    <!-- CHALLENGE DETAIL -->
+    <div id="view-challenge-detail" class="view">
+      <button class="btn btn-ghost btn-sm mb-4" onclick="navTo('view-challenges')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      <div class="learn-layout">
+        <div>
+          <div class="page-badge" id="ch-lang-badge">Python</div>
+          <h2 id="ch-title" style="font-family:var(--font-display);font-size:26px;font-weight:800;margin-bottom:8px"></h2>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <span id="ch-diff" class="arena-difficulty diff-easy"></span>
+            <span class="text-xs text-muted" id="ch-xp-val"></span>
+          </div>
+          <div class="content-block" id="ch-desc"></div>
+          <div class="code-challenge">
+            <div class="challenge-header"><span class="challenge-title">📝 Your Solution</span><span class="text-xs text-muted" id="ch-lang-label">Python</span></div>
+            <textarea class="challenge-editor" id="ch-code-editor" placeholder="Write your solution here..."></textarea>
+            <div class="challenge-run-bar">
+              <button class="btn btn-primary btn-sm" onclick="runChallengeWithAI()"><i class="fa-solid fa-play"></i> Run & Check with AI</button>
+              <button class="btn btn-ghost btn-sm" onclick="getHint()">💡 Hint</button>
+              <span id="ch-run-status" class="text-xs text-muted"></span>
+            </div>
+            <div class="challenge-output" id="ch-output">// Output will appear here...</div>
+          </div>
+        </div>
+        <div class="learn-sidebar-panel">
+          <div class="ai-panel">
+            <div class="ai-panel-header">
+              <div class="ai-avatar">🤖</div>
+              <div class="ai-status"><span class="ai-name">Challenge Coach</span><span class="ai-online">Online</span></div>
+            </div>
+            <div class="ai-messages" id="ch-ai-chat">
+              <div class="ai-msg bot"><div class="ai-bubble">Ready to tackle this challenge? I'll guide you without giving away the answer! 💪</div></div>
+            </div>
+            <div class="ai-input-row">
+              <input class="ai-input" id="ch-ai-input" placeholder="Ask for a hint..." onkeydown="if(event.key==='Enter')sendChallengeChat()">
+              <button class="ai-send" onclick="sendChallengeChat()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+          <div class="card" style="padding:20px">
+            <h4 style="font-size:14px;font-weight:700;margin-bottom:10px">📌 Constraints</h4>
+            <div id="ch-constraints" class="text-sm text-muted" style="line-height:1.8"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="view-leaderboard" class="view">
+      <div class="page-header">
+        <div class="page-badge">Community</div>
+        <h1>Global Leaderboard</h1>
+        <p>Top coders this week. Keep grinding to climb the ranks!</p>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active">Weekly</div>
+        <div class="tab">All Time</div>
+      </div>
+      <div class="leaderboard" id="leaderboard-list"></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="view-progress" class="view">
+      <div class="page-header">
+        <div class="page-badge">Your Journey</div>
+        <h1>Progress & Achievements</h1>
+        <p>Track your growth across all languages.</p>
+      </div>
+      <div class="progress-grid">
+        <div>
+          <div class="progress-chart-wrap mb-4">
+            <div class="flex justify-between items-center mb-2">
+              <h3 style="font-size:15px;font-weight:700">🎯 Overall Progress</h3>
+              <span class="text-sm text-muted" id="prog-pct">0%</span>
+            </div>
+            <div class="xp-bars" id="xp-module-bars"></div>
+          </div>
+          <div class="card">
+            <div class="flex justify-between items-center mb-4">
+              <h3 style="font-size:15px;font-weight:700">📊 XP Breakdown</h3>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding:16px 0">
+              <svg width="140" height="140">
+                <defs><linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#00e5a0"/></linearGradient></defs>
+                <circle cx="70" cy="70" r="54" class="progress-ring-bg" stroke-width="12"/>
+                <circle cx="70" cy="70" r="54" class="progress-ring-fill" stroke-width="12" id="xp-ring" stroke-dasharray="339" stroke-dashoffset="339" transform="rotate(-90 70 70)"/>
+                <text x="70" y="65" text-anchor="middle" fill="var(--text)" font-size="22" font-weight="800" font-family="var(--font-display)" id="xp-ring-num">0</text>
+                <text x="70" y="82" text-anchor="middle" fill="var(--text3)" font-size="11" font-family="var(--font)">Total XP</text>
+              </svg>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div><div class="text-xs text-muted">Lessons</div><div style="font-size:20px;font-weight:800" id="prog-lessons-done">0</div></div>
+                <div><div class="text-xs text-muted">Challenges</div><div style="font-size:20px;font-weight:800" id="prog-ch-done">0</div></div>
+                <div><div class="text-xs text-muted">Streak</div><div style="font-size:20px;font-weight:800;color:var(--orange)" id="prog-streak">1🔥</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between items-center mb-4">
+            <h3 style="font-size:15px;font-weight:700">🏅 All Badges</h3>
+          </div>
+          <div class="badges-grid" id="all-badges-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #main -->
+</div><!-- end #app -->
+
+<!-- ===== MOBILE NAV ===== -->
+<nav id="mobile-nav">
+  <div class="mnav-item active" onclick="navTo('view-home')" data-view="view-home"><i class="fa-solid fa-house"></i><span>Home</span></div>
+  <div class="mnav-item" onclick="navTo('view-roadmap')" data-view="view-roadmap"><i class="fa-solid fa-map"></i><span>Roadmap</span></div>
+  <div class="mnav-item" onclick="navTo('view-learn')" data-view="view-learn"><i class="fa-solid fa-book-open"></i><span>Learn</span></div>
+  <div class="mnav-item" onclick="navTo('view-challenges')" data-view="view-challenges" style="position:relative"><i class="fa-solid fa-code"></i><span>Challenges</span></div>
+  <div class="mnav-item" onclick="navTo('view-progress')" data-view="view-progress"><i class="fa-solid fa-chart-line"></i><span>Progress</span></div>
+</nav>
+
+<!-- ===== MODALS ===== -->
+<div class="modal-backdrop" id="modal-generic">
+  <div class="modal">
+    <div class="modal-emoji" id="modal-emoji">🚧</div>
+    <h3 id="modal-title">Notice</h3>
+    <p id="modal-msg">Message</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Dismiss</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-badge">
+  <div class="modal">
+    <div class="modal-emoji">🏅</div>
+    <h3>Badge Unlocked!</h3>
+    <p id="badge-modal-text">You've earned a new badge!</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeBadgeModal()">Awesome! 🎉</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ===== AUDIO CONTEXT ===== -->
+<script>
+// ======================== AUDIO ========================
+let _audioCtx;
+function getAudio() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return _audioCtx;
+}
+function playTone(freq=440,dur=0.08,type='sine',vol=0.1) {
+  try {
+    const ctx=getAudio();
+    const o=ctx.createOscillator();
+    const g=ctx.createGain();
+    o.type=type; o.frequency.value=freq; g.gain.value=vol;
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime+dur);
+  } catch(e){}
+}
+function playSuccess() { playTone(880,0.1,'sine',0.15); setTimeout(()=>playTone(1320,0.1,'sine',0.13),120); }
+function playError() { playTone(220,0.15,'square',0.15); }
+function playClick() { playTone(600,0.04,'triangle',0.08); }
+
+// ======================== CONFETTI ========================
+function celebrate() {
+  const end = Date.now() + 1800;
+  const iv = setInterval(()=>{
+    if(Date.now()>end){clearInterval(iv);return;}
+    confetti({particleCount:40,spread:360,startVelocity:28,origin:{x:Math.random(),y:Math.random()-0.2}});
+  },250);
+}
+
+// ======================== TOAST ========================
+function showToast(msg, type='success', icon='') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icons = {success:'✅',error:'❌',info:'💡'};
+  el.innerHTML = `<span>${icon||icons[type]||'ℹ'}</span> ${msg}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(()=>el.remove(), 3200);
+}
+
+// ======================== MODAL ========================
+function showModal(title, msg, emoji='🚧') {
+  document.getElementById('modal-emoji').textContent = emoji;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  document.getElementById('modal-generic').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-generic').classList.remove('show'); }
+function showBadgeModal(text) {
+  document.getElementById('badge-modal-text').textContent = text;
+  document.getElementById('modal-badge').classList.add('show');
+  celebrate(); playSuccess();
+}
+function closeBadgeModal() { document.getElementById('modal-badge').classList.remove('show'); }
+
+// ======================== STATE ========================
+const DEFAULT_STATE = {
+  name:'', email:'', level:'Beginner', lang:'Python',
+  progress:0, xp:0, streak:1, badges:[], completedChallenges:[],
+  onboarded: false
+};
+let S = {...DEFAULT_STATE};
+
+function saveState() {
+  localStorage.setItem('cb2_state', JSON.stringify(S));
+  updateSidebarUser();
+}
+function loadState() {
+  const raw = localStorage.getItem('cb2_state');
+  if(raw) { try { S = {...DEFAULT_STATE,...JSON.parse(raw)}; } catch(e){} }
+}
+function resetAll() {
+  if(!confirm('Reset all progress? This cannot be undone.')) return;
+  localStorage.removeItem('cb2_state');
+  location.reload();
+}
+
+// ======================== NAVIGATION ========================
+const AUTH_VIEWS = new Set(['view-landing','view-login','view-onboard1','view-onboard2','view-onboard3']);
+const APP_VIEWS = new Set(['view-home','view-roadmap','view-learn','view-challenges','view-challenge-detail','view-leaderboard','view-progress']);
+
+function navTo(id) {
+  playClick();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+  document.getElementById('app-screen')?.scrollTo(0,0);
+  window.scrollTo(0,0);
+
+  const isAuth = AUTH_VIEWS.has(id);
+  const app = document.getElementById('app');
+  app.classList.toggle('auth-mode', isAuth);
+
+  // Sync sidebar & mobile nav
+  document.querySelectorAll('[data-view]').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view === id);
+  });
+
+  // On-enter hooks
+  if(id==='view-home') renderDashboard();
+  if(id==='view-roadmap') renderRoadmap();
+  if(id==='view-learn') renderCurrentLesson();
+  if(id==='view-challenges') renderChallenges();
+  if(id==='view-leaderboard') renderLeaderboard();
+  if(id==='view-progress') renderProgress();
+  if(id==='view-onboard2') renderOnboardLangGrid();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+
+// ======================== AUTH ========================
+function doSignup() {
+  // Resume audio context on user interaction
+  try { getAudio().resume(); } catch(e) {}
+  const name = document.getElementById('inp-name').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  if(!name) { showToast('Please enter your name','error'); return; }
+  if(email && !email.includes('@')) { showToast('Please enter a valid email','error'); return; }
+  S.name = name; S.email = email;
+  saveState();
+  navTo('view-onboard1');
+}
+function doLogin() {
+  const raw = localStorage.getItem('cb2_state');
+  if(raw) {
+    loadState();
+    if(!S.onboarded) { navTo('view-onboard1'); return; }
+    navTo('view-home');
+  } else {
+    showToast('No account found. Sign up first!','error');
+    navTo('view-landing');
+  }
+}
+
+// ======================== ONBOARDING ========================
+function selLevel(lvl, el) {
+  document.querySelectorAll('.level-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  S.level = lvl;
+}
+function selLang(lang, el) {
+  document.querySelectorAll('.lang-card:not(.locked)').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  S.lang = lang;
+}
+function nextOnboard(step) {
+  if(step===2 && !S.level) { showToast('Please select a level','error'); return; }
+  if(step===3 && !S.lang) { showToast('Please pick a language','error'); return; }
+  if(step===3) {
+    document.getElementById('onboard-name-show').textContent = S.name || 'Coder';
+    document.getElementById('summary-lang').textContent = S.lang;
+    document.getElementById('summary-level').textContent = S.level;
+  }
+  navTo('view-onboard'+step);
+}
+function enterApp() {
+  S.onboarded = true;
+  saveState();
+  navTo('view-home');
+}
+
+const LANGS = [
+  {id:'Python',emoji:'🐍',desc:'Best for beginners',cls:'lang-py',avail:true},
+  {id:'JavaScript',emoji:'⚡',desc:'Web & full-stack',cls:'lang-js',avail:true},
+  {id:'Java',emoji:'☕',desc:'Enterprise apps',cls:'lang-java',avail:true},
+  {id:'C++',emoji:'⚙️',desc:'Systems & games',cls:'lang-cpp',avail:true},
+  {id:'TypeScript',emoji:'🔷',desc:'Type-safe JS',cls:'lang-ts',avail:false},
+  {id:'Go',emoji:'🐹',desc:'Cloud & backends',cls:'lang-go',avail:false},
+  {id:'Ruby',emoji:'💎',desc:'Web development',cls:'lang-ruby',avail:false},
+  {id:'R',emoji:'📊',desc:'Data science',cls:'lang-r',avail:false},
+];
+function renderOnboardLangGrid() {
+  const g = document.getElementById('onboard-lang-grid');
+  g.innerHTML = LANGS.map(l=>`
+    <div class="lang-card ${l.cls} ${!l.avail?'locked':''}" onclick="${l.avail?`selLang('${l.id}',this)`:''}" >
+      <span class="lang-logo">${l.emoji}</span>
+      <div class="lang-name">${l.id}</div>
+      <div class="lang-desc">${l.desc}</div>
+      <span class="lang-tag ${l.avail?'tag-active':'tag-soon'}">${l.avail?'Available':'Coming Soon'}</span>
+    </div>`).join('');
+  // Re-select if already picked
+  if(S.lang) {
+    const match = g.querySelector(`.lang-card:not(.locked)`);
+    if(match) { /* might not match, that's ok */ }
+  }
+}
+
+// ======================== CURRICULUM DATA ========================
+const CURRICULUM = {
+  Python: [
+    { module:'Module 1: Python Basics', color:'#3b9be0', icon:'🐍', lessons:[
+      { id:'py-1-1', title:'Welcome to Python', type:'lesson', xp:10, body:`
+        <div class="content-block">
+          <p><strong>Python</strong> is one of the most popular programming languages in the world. It's known for its clean, readable syntax that reads almost like English.</p>
+          <p>Python was created by Guido van Rossum in 1991. Today it powers everything from Instagram to NASA spacecraft.</p>
+          <h3>Why Python?</h3>
+          <p>✅ Easy to learn — clean syntax<br>✅ Versatile — web, AI, data science, automation<br>✅ Massive community and libraries<br>✅ Used by Google, Netflix, Spotify</p>
+          <div class="callout callout-tip"><span class="callout-icon">💡</span><div class="callout-text"><strong>Fun Fact:</strong> Python is named after Monty Python's Flying Circus, not the snake!</div></div>
+          <h3>Your First Program</h3>
+          <p>Every programmer's first program prints "Hello, World!" to the screen. In Python, it's incredibly simple:</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-fn">print</span>(<span class="tok-str">"Hello, World!"</span>)
+<span class="tok-cmt"># Output: Hello, World!</span></pre>
+        </div>
+        <div class="content-block">
+          <p>The <code style="background:var(--surface3);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12px">print()</code> function outputs text to the screen. That's it — your first line of Python!</p>
+        </div>`,
+        quiz:{q:'What does print("Hello") do?',opts:['Prints Hello to screen','Creates a variable','Starts a loop','Defines a function'],ans:0}
+      },
+      { id:'py-1-2', title:'Comments & Variables', type:'lesson', xp:10, body:`
+        <div class="content-block">
+          <h3>Comments</h3>
+          <p>Comments are notes in your code that Python ignores. They help you explain what your code does.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-cmt"># This is a comment — Python ignores it</span>
+<span class="tok-fn">print</span>(<span class="tok-str">"I am visible"</span>)  <span class="tok-cmt"># Inline comment</span>
+
+<span class="tok-cmt">"""
+Multi-line comment
+using triple quotes
+"""</span></pre>
+        </div>
+        <div class="content-block">
+          <h3>Variables</h3>
+          <p>Variables store data. Think of them as labelled boxes.</p>
+          <div class="callout callout-info"><span class="callout-icon">ℹ️</span><div class="callout-text"><strong>Rule:</strong> Variable names must start with a letter or underscore. No spaces allowed.</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-kw">name</span> = <span class="tok-str">"Alice"</span>       <span class="tok-cmt"># String variable</span>
+<span class="tok-kw">age</span> = <span class="tok-num">25</span>            <span class="tok-cmt"># Integer variable</span>
+<span class="tok-kw">height</span> = <span class="tok-num">5.7</span>        <span class="tok-cmt"># Float variable</span>
+<span class="tok-kw">is_student</span> = <span class="tok-bool">True</span>  <span class="tok-cmt"># Boolean variable</span>
+
+<span class="tok-fn">print</span>(<span class="tok-kw">name</span>, <span class="tok-kw">age</span>)  <span class="tok-cmt"># Alice 25</span></pre>
+        </div>`,
+        quiz:{q:'Which is a valid Python variable name?',opts:['2name','my_name','my-name','my name'],ans:1}
+      },
+      { id:'py-1-3', title:'Data Types & Math', type:'lesson', xp:10, body:`
+        <div class="content-block">
+          <h3>Data Types</h3>
+          <p>Python has several built-in data types. The most common ones:</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-cmt"># int — whole numbers</span>
+x = <span class="tok-num">42</span>
+
+<span class="tok-cmt"># float — decimals</span>
+pi = <span class="tok-num">3.14159</span>
+
+<span class="tok-cmt"># str — text</span>
+msg = <span class="tok-str">"Hello Python"</span>
+
+<span class="tok-cmt"># bool — True or False</span>
+is_active = <span class="tok-bool">True</span>
+
+<span class="tok-cmt"># Check the type!</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">type</span>(x))    <span class="tok-cmt"># &lt;class 'int'&gt;</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">type</span>(pi))   <span class="tok-cmt"># &lt;class 'float'&gt;</span></pre>
+        </div>
+        <div class="content-block">
+          <h3>Math Operations</h3>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>a = <span class="tok-num">10</span>
+b = <span class="tok-num">3</span>
+
+<span class="tok-fn">print</span>(a + b)   <span class="tok-cmt"># 13  (addition)</span>
+<span class="tok-fn">print</span>(a - b)   <span class="tok-cmt"># 7   (subtraction)</span>
+<span class="tok-fn">print</span>(a * b)   <span class="tok-cmt"># 30  (multiplication)</span>
+<span class="tok-fn">print</span>(a / b)   <span class="tok-cmt"># 3.33 (division)</span>
+<span class="tok-fn">print</span>(a ** b)  <span class="tok-cmt"># 1000 (power: 10³)</span>
+<span class="tok-fn">print</span>(a % b)   <span class="tok-cmt"># 1   (modulo/remainder)</span></pre>
+        </div>`,
+        quiz:{q:'What is the result of 10 % 3 in Python?',opts:['3','1','0','3.33'],ans:1}
+      },
+      { id:'py-1-4', title:'Strings Deep Dive', type:'lesson', xp:15, body:`
+        <div class="content-block">
+          <h3>String Operations</h3>
+          <p>Strings are sequences of characters. Python has powerful built-in string methods.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>name = <span class="tok-str">"Python Developer"</span>
+
+<span class="tok-fn">print</span>(<span class="tok-fn">len</span>(name))         <span class="tok-cmt"># 16 — length</span>
+<span class="tok-fn">print</span>(name.<span class="tok-fn">upper</span>())     <span class="tok-cmt"># PYTHON DEVELOPER</span>
+<span class="tok-fn">print</span>(name.<span class="tok-fn">lower</span>())     <span class="tok-cmt"># python developer</span>
+<span class="tok-fn">print</span>(name.<span class="tok-fn">split</span>())     <span class="tok-cmt"># ['Python', 'Developer']</span>
+<span class="tok-fn">print</span>(name[<span class="tok-num">0</span>])          <span class="tok-cmt"># P — indexing</span>
+<span class="tok-fn">print</span>(name[<span class="tok-num">0</span>:<span class="tok-num">6</span>])        <span class="tok-cmt"># Python — slicing</span></pre>
+        </div>
+        <div class="content-block">
+          <h3>f-Strings (Modern Formatting)</h3>
+          <div class="callout callout-tip"><span class="callout-icon">💡</span><div class="callout-text"><strong>f-strings</strong> are the modern way to put variables inside strings. Use an <code>f</code> before the quotes.</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>name = <span class="tok-str">"Alice"</span>
+age = <span class="tok-num">25</span>
+
+<span class="tok-cmt"># f-string formatting</span>
+msg = <span class="tok-fn">f</span><span class="tok-str">"Hi, I'm {name} and I'm {age} years old!"</span>
+<span class="tok-fn">print</span>(msg)
+<span class="tok-cmt"># Output: Hi, I'm Alice and I'm 25 years old!</span></pre>
+        </div>`,
+        quiz:{q:'Which f-string correctly shows "I am 20 years old"?',opts:['f"I am age years old"','f"I am {age} years old"','"I am {age} years old"','f(I am age years old)'],ans:1}
+      },
+    ]},
+    { module:'Module 2: Control Flow', color:'#f59e0b', icon:'🔀', lessons:[
+      { id:'py-2-1', title:'If / Elif / Else', type:'lesson', xp:15, body:`
+        <div class="content-block">
+          <h3>Making Decisions</h3>
+          <p>Conditional statements let your program take different paths based on conditions.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>age = <span class="tok-num">18</span>
+
+<span class="tok-kw">if</span> age >= <span class="tok-num">18</span>:
+    <span class="tok-fn">print</span>(<span class="tok-str">"You can vote!"</span>)
+<span class="tok-kw">elif</span> age >= <span class="tok-num">16</span>:
+    <span class="tok-fn">print</span>(<span class="tok-str">"Almost there!"</span>)
+<span class="tok-kw">else</span>:
+    <span class="tok-fn">print</span>(<span class="tok-str">"Too young to vote."</span>)
+
+<span class="tok-cmt"># Output: You can vote!</span></pre>
+        </div>
+        <div class="content-block">
+          <h3>Comparison Operators</h3>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>x = <span class="tok-num">10</span>
+<span class="tok-fn">print</span>(x == <span class="tok-num">10</span>)   <span class="tok-cmt"># True  (equal)</span>
+<span class="tok-fn">print</span>(x != <span class="tok-num">5</span>)    <span class="tok-cmt"># True  (not equal)</span>
+<span class="tok-fn">print</span>(x > <span class="tok-num">8</span>)     <span class="tok-cmt"># True  (greater than)</span>
+<span class="tok-fn">print</span>(x < <span class="tok-num">5</span>)     <span class="tok-cmt"># False (less than)</span>
+<span class="tok-fn">print</span>(x >= <span class="tok-num">10</span>)   <span class="tok-cmt"># True  (greater or equal)</span></pre>
+        </div>`,
+        quiz:{q:'What does "elif" stand for?',opts:['else if','else loop','extended if','extra logic'],ans:0}
+      },
+      { id:'py-2-2', title:'Loops — for & while', type:'lesson', xp:15, body:`
+        <div class="content-block">
+          <h3>For Loops</h3>
+          <p>Loops repeat code. A <code style="background:var(--surface3);padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:12px">for</code> loop iterates over a sequence.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-cmt"># Loop through a range</span>
+<span class="tok-kw">for</span> i <span class="tok-kw">in</span> <span class="tok-fn">range</span>(<span class="tok-num">5</span>):
+    <span class="tok-fn">print</span>(i)      <span class="tok-cmt"># 0, 1, 2, 3, 4</span>
+
+<span class="tok-cmt"># Loop through a list</span>
+fruits = [<span class="tok-str">"apple"</span>, <span class="tok-str">"banana"</span>, <span class="tok-str">"cherry"</span>]
+<span class="tok-kw">for</span> fruit <span class="tok-kw">in</span> fruits:
+    <span class="tok-fn">print</span>(fruit)</pre>
+        </div>
+        <div class="content-block">
+          <h3>While Loops</h3>
+          <div class="callout callout-warn"><span class="callout-icon">⚠️</span><div class="callout-text"><strong>Caution:</strong> Always make sure your while loop has a way to stop, or it will run forever!</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>count = <span class="tok-num">0</span>
+<span class="tok-kw">while</span> count < <span class="tok-num">5</span>:
+    <span class="tok-fn">print</span>(count)
+    count += <span class="tok-num">1</span>   <span class="tok-cmt"># Always increment!</span>
+<span class="tok-cmt"># Prints: 0 1 2 3 4</span></pre>
+        </div>`,
+        quiz:{q:'What does range(3) produce?',opts:['[1,2,3]','[0,1,2]','[0,1,2,3]','[3]'],ans:1}
+      },
+      { id:'py-2-3', title:'Lists & Tuples', type:'lesson', xp:15, body:`
+        <div class="content-block">
+          <h3>Lists</h3>
+          <p>Lists store multiple items in a single variable. They're <strong>ordered, changeable, and allow duplicates</strong>.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>scores = [<span class="tok-num">95</span>, <span class="tok-num">87</span>, <span class="tok-num">92</span>, <span class="tok-num">78</span>]
+
+<span class="tok-fn">print</span>(scores[<span class="tok-num">0</span>])      <span class="tok-cmt"># 95 — first item</span>
+<span class="tok-fn">print</span>(scores[-<span class="tok-num">1</span>])     <span class="tok-cmt"># 78 — last item</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">len</span>(scores))    <span class="tok-cmt"># 4</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">max</span>(scores))    <span class="tok-cmt"># 95</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">min</span>(scores))    <span class="tok-cmt"># 78</span>
+
+scores.<span class="tok-fn">append</span>(<span class="tok-num">100</span>)   <span class="tok-cmt"># Add item</span>
+scores.<span class="tok-fn">remove</span>(<span class="tok-num">78</span>)   <span class="tok-cmt"># Remove item</span></pre>
+        </div>
+        <div class="content-block">
+          <h3>Tuples (Immutable Lists)</h3>
+          <p>Tuples are like lists but <strong>cannot be changed</strong> after creation. Use them for fixed data.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>coordinates = (<span class="tok-num">40.7128</span>, <span class="tok-num">-74.0060</span>)  <span class="tok-cmt"># NYC</span>
+<span class="tok-fn">print</span>(coordinates[<span class="tok-num">0</span>])  <span class="tok-cmt"># 40.7128</span>
+
+<span class="tok-cmt"># coordinates[0] = 0  ← This would cause an ERROR!</span></pre>
+        </div>`,
+        quiz:{q:'How do you add an item to a list called "nums"?',opts:['nums.insert(5)','nums.add(5)','nums.append(5)','nums.push(5)'],ans:2}
+      },
+    ]},
+    { module:'Module 3: Functions', color:'#8b5cf6', icon:'⚡', lessons:[
+      { id:'py-3-1', title:'Defining Functions', type:'lesson', xp:20, body:`
+        <div class="content-block">
+          <h3>What is a Function?</h3>
+          <p>A function is a reusable block of code that performs a specific task. Functions are the building blocks of any program.</p>
+          <div class="callout callout-tip"><span class="callout-icon">💡</span><div class="callout-text"><strong>DRY Principle:</strong> Don't Repeat Yourself. Functions let you write code once and reuse it everywhere.</div></div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-kw">def</span> <span class="tok-fn">greet</span>(name):
+    <span class="tok-str">"""Greets a person by name"""</span>
+    <span class="tok-kw">return</span> <span class="tok-fn">f</span><span class="tok-str">"Hello, {name}! Welcome to Python."</span>
+
+<span class="tok-cmt"># Call the function</span>
+message = <span class="tok-fn">greet</span>(<span class="tok-str">"Alice"</span>)
+<span class="tok-fn">print</span>(message)
+<span class="tok-cmt"># Hello, Alice! Welcome to Python.</span>
+
+<span class="tok-cmt"># Multiple parameters</span>
+<span class="tok-kw">def</span> <span class="tok-fn">add</span>(a, b):
+    <span class="tok-kw">return</span> a + b
+
+<span class="tok-fn">print</span>(<span class="tok-fn">add</span>(<span class="tok-num">5</span>, <span class="tok-num">3</span>))   <span class="tok-cmt"># 8</span></pre>
+        </div>`,
+        quiz:{q:'What keyword defines a function in Python?',opts:['func','define','def','function'],ans:2}
+      },
+      { id:'py-3-2', title:'Scope & Default Arguments', type:'lesson', xp:20, body:`
+        <div class="content-block">
+          <h3>Default Arguments</h3>
+          <p>You can set default values for parameters so they're optional when calling the function.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-kw">def</span> <span class="tok-fn">power</span>(base, exponent=<span class="tok-num">2</span>):
+    <span class="tok-kw">return</span> base ** exponent
+
+<span class="tok-fn">print</span>(<span class="tok-fn">power</span>(<span class="tok-num">4</span>))     <span class="tok-cmt"># 16 (default: squared)</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">power</span>(<span class="tok-num">2</span>, <span class="tok-num">10</span>))  <span class="tok-cmt"># 1024</span></pre>
+        </div>
+        <div class="content-block">
+          <h3>Variable Scope</h3>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>x = <span class="tok-num">10</span>  <span class="tok-cmt"># Global variable</span>
+
+<span class="tok-kw">def</span> <span class="tok-fn">my_func</span>():
+    y = <span class="tok-num">20</span>  <span class="tok-cmt"># Local variable</span>
+    <span class="tok-fn">print</span>(x)  <span class="tok-cmt"># Can access global: 10</span>
+    <span class="tok-fn">print</span>(y)  <span class="tok-cmt"># 20</span>
+
+<span class="tok-fn">my_func</span>()
+<span class="tok-cmt"># print(y)  ← ERROR: y is only inside the function</span></pre>
+        </div>`,
+        quiz:{q:'What happens if you access a local variable outside its function?',opts:['Returns None','Returns 0','Raises a NameError','Works fine'],ans:2}
+      },
+    ]},
+    { module:'Module 4: OOP & Advanced', color:'#ec4899', icon:'🏗️', lessons:[
+      { id:'py-4-1', title:'Classes & Objects', type:'lesson', xp:25, body:`
+        <div class="content-block">
+          <h3>Object-Oriented Programming</h3>
+          <p>OOP is a programming paradigm that organises code into <strong>objects</strong> — entities that combine data (attributes) and behaviour (methods).</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">python</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-kw">class</span> <span class="tok-cls">Dog</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(self, name, breed):
+        self.name = name
+        self.breed = breed
+
+    <span class="tok-kw">def</span> <span class="tok-fn">bark</span>(self):
+        <span class="tok-kw">return</span> <span class="tok-fn">f</span><span class="tok-str">"{self.name} says: Woof!"</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">info</span>(self):
+        <span class="tok-kw">return</span> <span class="tok-fn">f</span><span class="tok-str">"{self.name} is a {self.breed}"</span>
+
+<span class="tok-cmt"># Create objects (instances)</span>
+rex = <span class="tok-cls">Dog</span>(<span class="tok-str">"Rex"</span>, <span class="tok-str">"German Shepherd"</span>)
+buddy = <span class="tok-cls">Dog</span>(<span class="tok-str">"Buddy"</span>, <span class="tok-str">"Labrador"</span>)
+
+<span class="tok-fn">print</span>(rex.<span class="tok-fn">bark</span>())   <span class="tok-cmt"># Rex says: Woof!</span>
+<span class="tok-fn">print</span>(buddy.<span class="tok-fn">info</span>()) <span class="tok-cmt"># Buddy is a Labrador</span></pre>
+        </div>`,
+        quiz:{q:'What is __init__ in a Python class?',opts:['A required function','The constructor method','A private variable','An import statement'],ans:1}
+      },
+    ]}
+  ],
+  JavaScript: [
+    { module:'Module 1: JS Foundations', color:'#f7df1e', icon:'⚡', lessons:[
+      { id:'js-1-1', title:'Introduction to JavaScript', type:'lesson', xp:10, body:`
+        <div class="content-block">
+          <p><strong>JavaScript</strong> is the language of the web. Every interactive website you've ever used runs JavaScript in your browser.</p>
+          <p>Created in just 10 days by Brendan Eich in 1995, JavaScript now runs on servers (Node.js), mobile (React Native), and even desktop apps.</p>
+          <h3>Your First JS Code</h3>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">javascript</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-cmt">// Single line comment</span>
+<span class="tok-fn">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">"Hello, World!"</span>);
+
+<span class="tok-cmt">// Variables — 3 ways</span>
+<span class="tok-kw">const</span> name = <span class="tok-str">"Alice"</span>;   <span class="tok-cmt">// Cannot be reassigned</span>
+<span class="tok-kw">let</span> age = <span class="tok-num">25</span>;           <span class="tok-cmt">// Can be reassigned</span>
+<span class="tok-kw">var</span> old = <span class="tok-bool">true</span>;         <span class="tok-cmt">// Old way (avoid)</span>
+
+<span class="tok-fn">console</span>.<span class="tok-fn">log</span>(<span class="tok-str">\`Hi \${name}!\`</span>);  <span class="tok-cmt">// Template literal</span></pre>
+        </div>`,
+        quiz:{q:'Which keyword declares a constant in JavaScript?',opts:['var','let','const','def'],ans:2}
+      },
+      { id:'js-1-2', title:'Functions & Arrows', type:'lesson', xp:15, body:`
+        <div class="content-block">
+          <h3>Functions in JavaScript</h3>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">javascript</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-cmt">// Traditional function</span>
+<span class="tok-kw">function</span> <span class="tok-fn">greet</span>(name) {
+    <span class="tok-kw">return</span> <span class="tok-str">\`Hello, \${name}!\`</span>;
+}
+
+<span class="tok-cmt">// Arrow function (modern)</span>
+<span class="tok-kw">const</span> greetArrow = (name) => <span class="tok-str">\`Hello, \${name}!\`</span>;
+
+<span class="tok-cmt">// Arrow with multiple lines</span>
+<span class="tok-kw">const</span> add = (a, b) => {
+    <span class="tok-kw">const</span> result = a + b;
+    <span class="tok-kw">return</span> result;
+};
+
+<span class="tok-fn">console</span>.<span class="tok-fn">log</span>(<span class="tok-fn">greet</span>(<span class="tok-str">"World"</span>));   <span class="tok-cmt">// Hello, World!</span>
+<span class="tok-fn">console</span>.<span class="tok-fn">log</span>(<span class="tok-fn">add</span>(<span class="tok-num">5</span>, <span class="tok-num">3</span>));       <span class="tok-cmt">// 8</span></pre>
+        </div>`,
+        quiz:{q:'What is the arrow function syntax in JavaScript?',opts:['func=>','function()=>','(params) => {}','def params->'],ans:2}
+      },
+    ]},
+    { module:'Module 2: DOM & Events', color:'#ff9f43', icon:'🌐', lessons:[
+      { id:'js-2-1', title:'DOM Manipulation', type:'lesson', xp:20, body:`
+        <div class="content-block">
+          <h3>The Document Object Model</h3>
+          <p>The DOM is how JavaScript interacts with HTML. Every HTML element becomes an object you can modify.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">javascript</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-cmt">// Select elements</span>
+<span class="tok-kw">const</span> btn = document.<span class="tok-fn">getElementById</span>(<span class="tok-str">"myBtn"</span>);
+<span class="tok-kw">const</span> items = document.<span class="tok-fn">querySelectorAll</span>(<span class="tok-str">".item"</span>);
+
+<span class="tok-cmt">// Modify content & style</span>
+btn.textContent = <span class="tok-str">"Click Me!"</span>;
+btn.style.backgroundColor = <span class="tok-str">"#6c63ff"</span>;
+btn.classList.<span class="tok-fn">add</span>(<span class="tok-str">"active"</span>);
+
+<span class="tok-cmt">// Create & append elements</span>
+<span class="tok-kw">const</span> p = document.<span class="tok-fn">createElement</span>(<span class="tok-str">"p"</span>);
+p.textContent = <span class="tok-str">"New paragraph!"</span>;
+document.body.<span class="tok-fn">appendChild</span>(p);</pre>
+        </div>`,
+        quiz:{q:'Which method selects an element by its ID?',opts:['querySelector()','getElement()','getElementById()','findById()'],ans:2}
+      },
+    ]},
+  ],
+  Java: [
+    { module:'Module 1: Java Basics', color:'#ed8b00', icon:'☕', lessons:[
+      { id:'java-1-1', title:'Introduction to Java', type:'lesson', xp:10, body:`
+        <div class="content-block">
+          <p><strong>Java</strong> is a class-based, object-oriented language designed to run anywhere. "Write once, run anywhere" — it compiles to bytecode that runs on the Java Virtual Machine (JVM).</p>
+          <p>Java powers Android apps, enterprise systems, and major cloud infrastructure at Google, Amazon, and more.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">java</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-kw">public class</span> <span class="tok-cls">HelloWorld</span> {
+    <span class="tok-kw">public static void</span> <span class="tok-fn">main</span>(String[] args) {
+        System.out.<span class="tok-fn">println</span>(<span class="tok-str">"Hello, World!"</span>);
+
+        <span class="tok-cmt">// Variables need explicit types</span>
+        <span class="tok-kw">int</span> age = <span class="tok-num">25</span>;
+        <span class="tok-kw">double</span> pi = <span class="tok-num">3.14</span>;
+        String name = <span class="tok-str">"Alice"</span>;
+        <span class="tok-kw">boolean</span> active = <span class="tok-bool">true</span>;
+
+        System.out.<span class="tok-fn">println</span>(<span class="tok-str">"Age: "</span> + age);
+    }
+}</pre>
+        </div>`,
+        quiz:{q:'What is the entry point method in every Java program?',opts:['start()','run()','main()','init()'],ans:2}
+      },
+    ]},
+  ],
+  'C++': [
+    { module:'Module 1: C++ Fundamentals', color:'#9c27b0', icon:'⚙️', lessons:[
+      { id:'cpp-1-1', title:'Introduction to C++', type:'lesson', xp:10, body:`
+        <div class="content-block">
+          <p><strong>C++</strong> is a high-performance language that gives you direct control over hardware and memory. It's used for game engines, operating systems, and real-time applications.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">cpp</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="tok-kw">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+<span class="tok-kw">using namespace</span> std;
+
+<span class="tok-kw">int</span> <span class="tok-fn">main</span>() {
+    cout << <span class="tok-str">"Hello, World!"</span> << endl;
+
+    <span class="tok-cmt">// Strongly typed variables</span>
+    <span class="tok-kw">int</span> age = <span class="tok-num">25</span>;
+    <span class="tok-kw">double</span> pi = <span class="tok-num">3.14159</span>;
+    string name = <span class="tok-str">"Alice"</span>;
+
+    cout << <span class="tok-str">"Name: "</span> << name << endl;
+    <span class="tok-kw">return</span> <span class="tok-num">0</span>;
+}</pre>
+        </div>`,
+        quiz:{q:'Which header file is needed for cout in C++?',opts:['<stdio.h>','<iostream>','<conio.h>','<stdlib.h>'],ans:1}
+      },
+    ]},
+  ],
+};
+
+// ======================== CHALLENGES DATA ========================
+const CHALLENGES = [
+  {id:'ch1',lang:'Python',diff:'easy',title:'FizzBuzz Classic',xp:30,desc:'Write a program that prints numbers 1-20, but replaces multiples of 3 with "Fizz", multiples of 5 with "Buzz", and multiples of both with "FizzBuzz".',constraints:'• Use a for loop\n• Use conditional statements\n• Print each result on a new line',starter:'# FizzBuzz in Python\nfor i in range(1, 21):\n    # Your code here\n    pass'},
+  {id:'ch2',lang:'Python',diff:'easy',title:'Palindrome Checker',xp:30,desc:'Check if a given string is a palindrome (reads the same forwards and backwards). Return True or False.',constraints:'• Handle uppercase/lowercase\n• Ignore spaces (strip them)\n• Use string slicing',starter:'def is_palindrome(s):\n    # Your code here\n    pass\n\nprint(is_palindrome("racecar"))  # True\nprint(is_palindrome("hello"))    # False'},
+  {id:'ch3',lang:'Python',diff:'medium',title:'Fibonacci Generator',xp:60,desc:'Write a function that returns the first n Fibonacci numbers as a list. Fibonacci sequence: each number is the sum of the two before it.',constraints:'• Handle n=0 and n=1 edge cases\n• Use a loop or recursion\n• Return a list',starter:'def fibonacci(n):\n    # Your code here\n    pass\n\nprint(fibonacci(8))  # [0,1,1,2,3,5,8,13]'},
+  {id:'ch4',lang:'JavaScript',diff:'easy',title:'Reverse a String',xp:30,desc:'Write a JavaScript function that takes a string and returns it reversed. No built-in reverse() on strings!',constraints:'• Must return a string\n• Cannot use .split().reverse().join()\n• Use a loop or spread + array methods',starter:'function reverseString(str) {\n  // Your code here\n}\n\nconsole.log(reverseString("hello")); // "olleh"'},
+  {id:'ch5',lang:'JavaScript',diff:'medium',title:'Array Flattener',xp:50,desc:'Flatten a nested array of any depth into a single flat array.',constraints:'• Handle any depth of nesting\n• Return a new array\n• No Array.flat() built-in',starter:'function flatten(arr) {\n  // Your code here\n}\n\nconsole.log(flatten([1, [2, [3, [4]]]])); // [1,2,3,4]'},
+  {id:'ch6',lang:'Python',diff:'hard',title:'Binary Search',xp:100,desc:'Implement binary search on a sorted list. Return the index of the target, or -1 if not found. Must be O(log n).',constraints:'• O(log n) time complexity required\n• Return -1 if not found\n• Do not use list.index()',starter:'def binary_search(arr, target):\n    # Your code here\n    pass\n\nnums = [1,3,5,7,9,11,13,15]\nprint(binary_search(nums, 7))   # 3\nprint(binary_search(nums, 10))  # -1'},
+  {id:'ch7',lang:'Java',diff:'medium',title:'Factorial Calculator',xp:50,desc:'Write a Java method that calculates the factorial of a given non-negative integer using recursion.',constraints:'• Use recursion\n• Handle n=0 (return 1)\n• Handle large numbers with long type',starter:'public class Solution {\n    public static long factorial(int n) {\n        // Your code here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(factorial(5)); // 120\n    }\n}'},
+  {id:'ch8',lang:'C++',diff:'hard',title:'Linked List Implementation',xp:100,desc:'Implement a singly linked list in C++ with insert, delete, and print operations.',constraints:'• Use struct/class for Node\n• Implement insert at head\n• Implement delete by value\n• Implement print all nodes',starter:'#include <iostream>\nusing namespace std;\n\nstruct Node {\n    int data;\n    Node* next;\n};\n\n// Implement your LinkedList class here'},
+];
+
+// ======================== LEADERBOARD DATA ========================
+const LEADERBOARD_DATA = [
+  {name:'Sakura T.',xp:4820,streak:45,badge:'🏆',avatar:'🌸',color:'#ff6fd8'},
+  {name:'Arjun K.',xp:4210,streak:30,badge:'⚡',avatar:'🎯',color:'#6c63ff'},
+  {name:'Zara M.',xp:3975,streak:28,badge:'🔥',avatar:'💫',color:'#00e5a0'},
+  {name:'Liam C.',xp:3340,streak:21,badge:'🏅',avatar:'🦁',color:'#ff9f43'},
+  {name:'Priya S.',xp:3120,streak:19,badge:'💎',avatar:'🦋',color:'#3b9be0'},
+  {name:'Wei Z.',xp:2880,streak:15,badge:'🎖️',avatar:'🐉',color:'#ec4899'},
+  {name:'Carlos R.',xp:2450,streak:12,badge:'📚',avatar:'🚀',color:'#ffd93d'},
+  {name:'Amara O.',xp:1980,streak:8,badge:'🌟',avatar:'⭐',color:'#00e5a0'},
+];
+
+const ALL_BADGES = [
+  {id:'first_lesson',icon:'🌱',name:'First Step',desc:'Complete your first lesson',condition:s=>s.progress>=1},
+  {id:'module1',icon:'🥉',name:'Module 1 Complete',desc:'Finish all Module 1 lessons',condition:s=>s.progress>=4},
+  {id:'module2',icon:'🥈',name:'Module 2 Complete',desc:'Finish all Module 2 lessons',condition:s=>s.progress>=7},
+  {id:'module3',icon:'🥇',name:'Module 3 Complete',desc:'Finish all Module 3 lessons',condition:s=>s.progress>=9},
+  {id:'streak7',icon:'🔥',name:'Week Warrior',desc:'Maintain a 7-day streak',condition:s=>s.streak>=7},
+  {id:'xp100',icon:'💎',name:'XP Hunter',desc:'Earn 100 XP',condition:s=>s.xp>=100},
+  {id:'xp500',icon:'🌟',name:'XP Master',desc:'Earn 500 XP',condition:s=>s.xp>=500},
+  {id:'challenge1',icon:'⚔️',name:'Challenge Accepted',desc:'Complete your first challenge',condition:s=>(s.completedChallenges||[]).length>=1},
+  {id:'challenge5',icon:'🏆',name:'Champion',desc:'Complete 5 challenges',condition:s=>(s.completedChallenges||[]).length>=5},
+];
+
+// ======================== DASHBOARD ========================
+function renderDashboard() {
+  document.getElementById('dash-name').textContent = S.name || 'Coder';
+  document.getElementById('d-streak').textContent = S.streak;
+  document.getElementById('d-xp').textContent = S.xp;
+
+  const curriculum = CURRICULUM[S.lang] || CURRICULUM['Python'];
+  const allLessons = curriculum.flatMap(m=>m.lessons);
+  const done = Math.min(S.progress, allLessons.length);
+  document.getElementById('d-lessons').textContent = done;
+
+  const earnedBadges = ALL_BADGES.filter(b=>b.condition(S));
+  document.getElementById('d-badges').textContent = earnedBadges.length;
+
+  const pct = allLessons.length ? Math.round((done/allLessons.length)*100) : 0;
+  document.getElementById('dash-prog-label').textContent = `${done} / ${allLessons.length} done`;
+  document.getElementById('dash-prog-bar').style.width = pct+'%';
+
+  const current = allLessons[Math.min(S.progress, allLessons.length-1)];
+  if(current) {
+    document.getElementById('dash-lesson-name').textContent = current.title;
+    document.getElementById('dash-current-lesson').onclick = () => navTo('view-learn');
+  }
+
+  // Badges row
+  const badgesRow = document.getElementById('dash-badges-row');
+  const toShow = ALL_BADGES.slice(0,3);
+  badgesRow.innerHTML = toShow.map(b=>{
+    const earned = b.condition(S);
+    return `<div class="badge-item ${earned?'earned':''}" style="padding:16px">
+      <span class="badge-icon">${b.icon}</span>
+      <div class="badge-info"><h4>${b.name}</h4><p>${b.desc}</p></div>
+      <div class="badge-status">${earned?'<span class="badge-earned-tag">✓ Earned</span>':'<span class="badge-locked-tag">Locked</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateSidebarUser() {
+  const n = S.name||'Learner';
+  const init = n.charAt(0).toUpperCase();
+  document.getElementById('sb-avatar').textContent = init;
+  document.getElementById('tb-avatar').textContent = init;
+  document.getElementById('sb-name').textContent = n;
+  document.getElementById('sb-xp-label').textContent = S.xp+' XP';
+  document.getElementById('sb-reset-label').title = 'Reset Progress';
+}
+
+// ======================== ROADMAP ========================
+function renderRoadmap() {
+  const langInfo = LANGS.find(l=>l.id===S.lang)||LANGS[0];
+  document.getElementById('roadmap-lang-badge').textContent = `${langInfo.emoji} ${S.lang} Path`;
+
+  const curriculum = CURRICULUM[S.lang] || CURRICULUM['Python'];
+  const allLessons = curriculum.flatMap(m=>m.lessons);
+  const container = document.getElementById('roadmap-container');
+
+  let globalIndex = 0;
+  container.innerHTML = curriculum.map(module=>{
+    const lessons = module.lessons.map(lesson=>{
+      const idx = globalIndex++;
+      const done = idx < S.progress;
+      const current = idx === S.progress;
+      const locked = idx > S.progress;
+      let iconClass = locked?'todo':done?'done':'current';
+      let icon = done?'✓':current?'▶':'🔒';
+      let liClass = done?'completed':current?'active-lesson':locked?'locked':'';
+      const onclick = !locked ? `onclick="openLesson(${idx})"` : '';
+      return `<div class="lesson-item ${liClass}" ${onclick}>
+        <div class="lesson-icon ${iconClass}">${icon}</div>
+        <div class="lesson-info">
+          <div class="lesson-name">${lesson.title}</div>
+          <div class="lesson-meta">${lesson.type==='challenge'?'🏆 Challenge':'📖 Lesson'} · ${lesson.xp} XP</div>
+        </div>
+        <span class="lesson-xp">+${lesson.xp} XP</span>
+      </div>`;
+    }).join('');
+    const modDone = allLessons.slice(0,globalIndex-module.lessons.length).length >= 0; // simplified
+    return `<div class="module-section">
+      <div class="module-title">
+        <div class="module-num" style="background:${module.color}22;color:${module.color}">${module.icon}</div>
+        <h3>${module.module}</h3>
+      </div>
+      <div class="lesson-list">${lessons}</div>
+    </div>`;
+  }).join('');
+}
+
+function openLesson(idx) {
+  S._lessonIndex = idx;
+  navTo('view-learn');
+}
+
+// ======================== LESSON RENDERING ========================
+let currentQuizAnswered = false;
+
+function renderCurrentLesson() {
+  const curriculum = CURRICULUM[S.lang] || CURRICULUM['Python'];
+  const allLessons = curriculum.flatMap(m=>m.lessons);
+  const idx = typeof S._lessonIndex === 'number' ? S._lessonIndex : Math.min(S.progress, allLessons.length-1);
+  S._lessonIndex = idx;
+  const lesson = allLessons[idx];
+  if(!lesson) return;
+
+  currentQuizAnswered = !lesson.quiz; // if no quiz, mark as "answered" so can proceed
+
+  document.getElementById('lesson-title').textContent = lesson.title;
+  document.getElementById('lesson-step-label').textContent = `Step ${idx+1} of ${allLessons.length}`;
+  document.getElementById('lesson-prog-fill').style.width = ((idx+1)/allLessons.length*100)+'%';
+  document.getElementById('lesson-body').innerHTML = lesson.body || '';
+
+  // Quiz
+  const quizArea = document.getElementById('lesson-quiz-area');
+  if(lesson.quiz) {
+    const q = lesson.quiz;
+    const letters = ['A','B','C','D'];
+    quizArea.innerHTML = `<div class="quiz-card">
+      <div class="quiz-q">🧠 Quick Check: ${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((opt,i)=>`<div class="quiz-opt" onclick="checkQuiz(this,${i===q.ans})">
+          <span class="quiz-opt-letter">${letters[i]}</span>${opt}
+        </div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="qfb"></div>
+    </div>`;
+  } else { quizArea.innerHTML=''; }
+
+  // Sidebar list
+  const list = document.getElementById('lesson-sidebar-list');
+  list.innerHTML = allLessons.slice(Math.max(0,idx-2), idx+5).map((l,i)=>{
+    const li = allLessons.indexOf(l);
+    const isActive = li===idx;
+    const isDone = li<S.progress;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${isActive?'rgba(108,99,255,0.1)':'transparent'};cursor:${li<=S.progress?'pointer':'default'};opacity:${li>S.progress?0.4:1}" onclick="${li<=S.progress?`openLesson(${li})`:''}">
+      <span style="font-size:12px">${isDone?'✅':isActive?'▶':'⭕'}</span>
+      <span style="font-size:12px;color:${isActive?'var(--accent2)':'var(--text2)'};font-weight:${isActive?700:500}">${l.title}</span>
+    </div>`;
+  }).join('');
+
+  // Buttons
+  document.getElementById('btn-lesson-prev').style.display = idx===0 ? 'none' : '';
+  document.getElementById('btn-lesson-next').textContent = idx===allLessons.length-1 ? '✅ Complete Course' : 'Continue →';
+}
+
+function checkQuiz(el, isCorrect) {
+  if(currentQuizAnswered) return;
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.style.pointerEvents='none');
+  const fb = document.getElementById('qfb');
+  if(isCorrect) {
+    el.classList.add('correct');
+    fb.className='quiz-feedback show correct-fb';
+    fb.innerHTML = '✅ Correct! Well done.';
+    currentQuizAnswered = true;
+    playSuccess();
+  } else {
+    el.classList.add('wrong');
+    fb.className='quiz-feedback show wrong-fb';
+    fb.innerHTML = '❌ Not quite. The correct answer is highlighted.';
+    document.querySelectorAll('.quiz-opt')[document.getElementById('lesson-quiz-area').querySelectorAll('.quiz-opt').length-1].classList.add('correct');
+    currentQuizAnswered = true;
+    playError();
+  }
+}
+
+function lessonNext() {
+  const curriculum = CURRICULUM[S.lang]||CURRICULUM['Python'];
+  const allLessons = curriculum.flatMap(m=>m.lessons);
+  const idx = S._lessonIndex;
+  if(!currentQuizAnswered && allLessons[idx]?.quiz) {
+    showToast('Answer the question first!','error','🧠'); return;
+  }
+  if(idx >= S.progress) {
+    S.progress = idx+1;
+    S.xp += allLessons[idx]?.xp || 10;
+    checkBadges();
+    saveState();
+    showToast(`+${allLessons[idx]?.xp||10} XP earned!`,'success','💎');
+    playSuccess();
+    if(idx%2===1) celebrate();
+  }
+  if(idx < allLessons.length-1) {
+    S._lessonIndex = idx+1;
+    renderCurrentLesson();
+  } else {
+    showModal('🎉 Course Complete!','You have completed the entire '+S.lang+' course. Amazing work!','🏆');
+    celebrate();
+  }
+}
+function lessonPrev() {
+  if(S._lessonIndex>0) { S._lessonIndex--; renderCurrentLesson(); }
+}
+
+function checkBadges() {
+  ALL_BADGES.forEach(b=>{
+    if(b.condition(S) && !S.badges.includes(b.id)) {
+      S.badges.push(b.id);
+      setTimeout(()=>showBadgeModal(`${b.icon} ${b.name}\n${b.desc}`), 600);
+    }
+  });
+}
+
+// ======================== COPY CODE ========================
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard?.writeText(pre.innerText).then(()=>{ btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1500); });
+}
+
+// ======================== AI CHAT (API) ========================
+async function sendAIMessage(chatBoxId, inputId, contextMsg='') {
+  const input = document.getElementById(inputId);
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value='';
+
+  const chatBox = document.getElementById(chatBoxId);
+  // User bubble
+  chatBox.innerHTML += `<div class="ai-msg user"><div class="ai-bubble">${msg}</div></div>`;
+  // Typing
+  const typingId = 'typing-'+Date.now();
+  chatBox.innerHTML += `<div class="ai-msg bot" id="${typingId}"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  const curriculum = CURRICULUM[S.lang]||CURRICULUM['Python'];
+  const allLessons = curriculum.flatMap(m=>m.lessons);
+  const current = allLessons[S._lessonIndex||0];
+
+  try {
+    const res = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        
+        max_tokens:1000,
+        system:`You are Byte, an encouraging AI coding tutor for CodeBeta, an edtech platform. The student is learning ${S.lang} at ${S.level} level. Current lesson: "${current?.title||'Introduction'}". ${contextMsg}
+        Keep responses concise (2-4 sentences max for simple questions), friendly, and educational. Use emojis sparingly. Never write more than 150 words. Don't give full solutions to challenges — guide with hints. Format code in backticks.`,
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "Sorry, I couldn't process that. Try again!";
+    document.getElementById(typingId)?.remove();
+    chatBox.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">${reply.replace(/`([^`]+)`/g,'<code style="background:var(--surface3);padding:1px 4px;border-radius:4px;font-family:var(--font-mono);font-size:12px">$1</code>')}</div></div>`;
+  } catch(e) {
+    document.getElementById(typingId)?.remove();
+    chatBox.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">Hmm, I'm having trouble connecting. Check your internet and try again! 🔌</div></div>`;
+  }
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function sendAIQuestion() { sendAIMessage('ai-chat-box','ai-question-input'); }
+function sendChallengeChat() {
+  const ch = CHALLENGES.find(c=>c.id===S._currentChallenge);
+  sendAIMessage('ch-ai-chat','ch-ai-input', ch?`Current challenge: "${ch.title}" - ${ch.desc}`:'');
+}
+
+async function dashQuickAsk() {
+  const input = document.getElementById('dash-q-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value='';
+  const box = document.getElementById('dash-quick-chat');
+  box.innerHTML += `<div class="ai-msg user"><div class="ai-bubble">${msg}</div></div>`;
+  const tid='dt-'+Date.now();
+  box.innerHTML += `<div class="ai-msg bot" id="${tid}"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  box.scrollTop=box.scrollHeight;
+
+  try {
+    const res = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        max_tokens:1000,
+        system:`You are Byte, a friendly AI coding tutor. Student: ${S.name||'Learner'}, learning ${S.lang} at ${S.level} level. Answer concisely in 2-3 sentences. Use emojis.`,
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Try asking something else!';
+    document.getElementById(tid)?.remove();
+    box.innerHTML+=`<div class="ai-msg bot"><div class="ai-bubble">${reply}</div></div>`;
+  } catch(e) {
+    document.getElementById(tid)?.remove();
+    box.innerHTML+=`<div class="ai-msg bot"><div class="ai-bubble">Connection issue — try again! 🔌</div></div>`;
+  }
+  box.scrollTop=box.scrollHeight;
+}
+
+// ======================== CHALLENGES ========================
+function renderChallenges(filter='all') {
+  const list = filter==='all' ? CHALLENGES : CHALLENGES.filter(c=>c.diff===filter);
+  const grid = document.getElementById('challenges-grid');
+  grid.innerHTML = list.map(c=>{
+    const done = (S.completedChallenges||[]).includes(c.id);
+    const diffColors = {easy:'var(--green)',medium:'var(--orange)',hard:'var(--red)'};
+    return `<div class="arena-card" onclick="openChallenge('${c.id}')">
+      <div>
+        <span class="arena-difficulty diff-${c.diff}" style="text-transform:uppercase;letter-spacing:1px">${done?'✅ ':''}${c.diff}</span>
+      </div>
+      <div class="arena-title">${c.title}</div>
+      <div class="arena-desc">${c.desc.slice(0,80)}...</div>
+      <div class="arena-footer">
+        <span class="arena-lang"><span>${c.lang==='Python'?'🐍':c.lang==='JavaScript'?'⚡':c.lang==='Java'?'☕':'⚙️'}</span>${c.lang}</span>
+        <span style="margin-left:auto" class="lesson-xp">+${c.xp} XP</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterChallenges(f,el) {
+  document.querySelectorAll('.tab-bar .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderChallenges(f==='all'?'all':f);
+}
+
+function openChallenge(id) {
+  const ch = CHALLENGES.find(c=>c.id===id);
+  if(!ch) return;
+  S._currentChallenge = id;
+  document.getElementById('ch-title').textContent = ch.title;
+  document.getElementById('ch-lang-badge').textContent = ch.lang==='Python'?'🐍 Python':ch.lang==='JavaScript'?'⚡ JavaScript':ch.lang==='Java'?'☕ Java':'⚙️ C++';
+  document.getElementById('ch-lang-label').textContent = ch.lang;
+  document.getElementById('ch-diff').textContent = ch.diff.toUpperCase();
+  document.getElementById('ch-diff').className = `arena-difficulty diff-${ch.diff}`;
+  document.getElementById('ch-xp-val').textContent = `+${ch.xp} XP reward`;
+  document.getElementById('ch-desc').innerHTML = `<p>${ch.desc}</p>`;
+  document.getElementById('ch-constraints').innerHTML = ch.constraints.split('\n').join('<br>');
+  document.getElementById('ch-code-editor').value = ch.starter;
+  document.getElementById('ch-output').textContent = '// Output will appear here...';
+  navTo('view-challenge-detail');
+}
+
+async function runChallengeWithAI() {
+  const ch = CHALLENGES.find(c=>c.id===S._currentChallenge);
+  const code = document.getElementById('ch-code-editor').value;
+  const status = document.getElementById('ch-run-status');
+  const output = document.getElementById('ch-output');
+  output.textContent = '// Analysing with AI...';
+  status.textContent = '⏳ Checking...';
+
+  try {
+    const res = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        max_tokens:1000,
+        system:`You are a code evaluator. Evaluate the submitted code for the challenge described. Be concise. Start with PASS or FAIL on line 1. Then give brief feedback (max 3 sentences). Point out bugs if any. Don't give full solutions.`,
+        messages:[{role:'user',content:`Challenge: ${ch.title}\nDescription: ${ch.desc}\n\nSubmitted Code:\n${code}`}]
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Could not evaluate.';
+    output.textContent = reply;
+    if(reply.startsWith('PASS')) {
+      status.textContent='✅ Passed!';
+      if(!S.completedChallenges) S.completedChallenges=[];
+      if(!S.completedChallenges.includes(ch.id)) {
+        S.completedChallenges.push(ch.id);
+        S.xp += ch.xp;
+        checkBadges();
+        saveState();
+        showToast(`Challenge complete! +${ch.xp} XP 🏆`,'success');
+        celebrate(); playSuccess();
+      }
+    } else { status.textContent='❌ Try again'; playError(); }
+  } catch(e) { output.textContent='Connection error. Try again!'; status.textContent=''; }
+}
+
+async function getHint() {
+  const ch = CHALLENGES.find(c=>c.id===S._currentChallenge);
+  const code = document.getElementById('ch-code-editor').value;
+  const chatBox = document.getElementById('ch-ai-chat');
+  const tid='h-'+Date.now();
+  chatBox.innerHTML+=`<div class="ai-msg bot" id="${tid}"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  chatBox.scrollTop=chatBox.scrollHeight;
+  try {
+    const res=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        max_tokens:1000,
+        system:'You are a helpful coding tutor. Give a hint for the challenge but DO NOT write the solution. Max 2 sentences.',
+        messages:[{role:'user',content:`Challenge: ${ch.title}\n${ch.desc}\nStudent's current code:\n${code}\n\nGive a helpful hint.`}]
+      })
+    });
+    const d=await res.json();
+    document.getElementById(tid)?.remove();
+    chatBox.innerHTML+=`<div class="ai-msg bot"><div class="ai-bubble">💡 ${d.content?.[0]?.text||'Think about the algorithm step by step!'}</div></div>`;
+  } catch(e) { document.getElementById(tid)?.remove(); }
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+// ======================== LEADERBOARD ========================
+function renderLeaderboard() {
+  const myEntry = {name: S.name||'You', xp: S.xp, streak: S.streak, badge:'🌱', avatar:'⭐', color:'var(--accent)', isMe:true};
+  const combined = [...LEADERBOARD_DATA, myEntry].sort((a,b)=>b.xp-a.xp);
+  const list = document.getElementById('leaderboard-list');
+  const ranks = ['🥇','🥈','🥉'];
+  list.innerHTML = combined.map((u,i)=>{
+    const rankClass = i<3 ? ['gold','silver','bronze'][i] : '';
+    return `<div class="lb-item ${u.isMe?'me':''}">
+      <span class="lb-rank ${rankClass}">${i<3?ranks[i]:i+1}</span>
+      <div class="lb-avatar" style="background:${u.color}22;color:${u.color}">${u.avatar}</div>
+      <div>
+        <div class="lb-name">${u.name}${u.isMe?' <span style="font-size:10px;background:rgba(108,99,255,0.2);color:var(--accent2);padding:2px 6px;border-radius:6px;margin-left:4px">You</span>':''}</div>
+        <div class="lb-streak">${u.streak||1}🔥 streak</div>
+      </div>
+      <span class="lb-xp">${u.xp} XP</span>
+      <span class="lb-badge">${u.badge||''}</span>
+    </div>`;
+  }).join('');
+}
+
+// ======================== PROGRESS ========================
+function renderProgress() {
+  document.getElementById('prog-streak').textContent = S.streak+'🔥';
+  document.getElementById('prog-lessons-done').textContent = S.progress;
+  document.getElementById('prog-ch-done').textContent = (S.completedChallenges||[]).length;
+  document.getElementById('prog-pct').textContent = Math.round((S.xp/500)*100)+'%';
+
+  // XP Ring
+  const maxXP = 500;
+  const pct = Math.min(S.xp/maxXP, 1);
+  const circumference = 339;
+  document.getElementById('xp-ring').style.strokeDashoffset = circumference - (circumference*pct);
+  document.getElementById('xp-ring-num').textContent = S.xp;
+
+  // Module bars
+  const curriculum = CURRICULUM[S.lang]||CURRICULUM['Python'];
+  let globalIdx=0;
+  const bars = document.getElementById('xp-module-bars');
+  bars.innerHTML = curriculum.map(m=>{
+    const start=globalIdx;
+    globalIdx+=m.lessons.length;
+    const done=Math.min(Math.max(0,S.progress-start),m.lessons.length);
+    const pct2=Math.round((done/m.lessons.length)*100);
+    return `<div class="xp-bar-item">
+      <div class="xp-bar-label"><span>${m.icon} ${m.module}</span><span>${done}/${m.lessons.length} lessons</span></div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${pct2}%;background:${m.color}"></div></div>
+    </div>`;
+  }).join('');
+
+  // All badges
+  const badgeList = document.getElementById('all-badges-list');
+  badgeList.innerHTML = ALL_BADGES.map(b=>{
+    const earned = b.condition(S);
+    return `<div class="badge-item ${earned?'earned':''}">
+      <span class="badge-icon" style="opacity:${earned?1:0.35}">${b.icon}</span>
+      <div class="badge-info"><h4>${b.name}</h4><p>${b.desc}</p></div>
+      <div class="badge-status">${earned?'<span class="badge-earned-tag">✓ Earned</span>':'<span class="badge-locked-tag">🔒</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ======================== INIT ========================
+function initApp() {
+  loadState();
+  if(S.onboarded) {
+    navTo('view-home');
+  } else {
+    navTo('view-landing');
+  }
+  updateSidebarUser();
+  renderChallenges();
+}
+
+window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
