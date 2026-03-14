@@ -102,3 +102,4 @@ app.listen(PORT, () => {
   console.log(`🧪  Test Groq at http://localhost:${PORT}/test`);
   console.log(`🔑  Groq Key: ${process.env.GROQ_API_KEY ? '✅ Found' : '❌ MISSING'}\n`);
 });
+module.exports = app;
